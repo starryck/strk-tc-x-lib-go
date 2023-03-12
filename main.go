@@ -6,6 +6,7 @@ import (
 	"github.com/urfave/cli/v2"
 
 	_ "github.com/forbot161602/pbc-golang-lib/source/entry/gbpreset"
+	"github.com/forbot161602/pbc-golang-lib/source/entry/gbrun_script"
 	"github.com/forbot161602/pbc-golang-lib/source/entry/gbshow_info"
 )
 
@@ -28,6 +29,15 @@ func init() {
 			return nil
 		},
 		Commands: []*cli.Command{
+			&cli.Command{
+				Name:      "run-script",
+				Usage:     "Perform a script",
+				HelpName:  "run-script",
+				ArgsUsage: "[arguments...]",
+				Action: func(c *cli.Context) error {
+					return gbrun_script.Execute()
+				},
+			},
 			&cli.Command{
 				Name:      "show-info",
 				Usage:     "Present service information",
