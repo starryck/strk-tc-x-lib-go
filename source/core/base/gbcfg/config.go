@@ -6,6 +6,8 @@ type Config interface {
 	GetBasePath() string
 	GetGitTag() string
 	GetGitCommit() string
+
+	GetServiceCode() string
 }
 
 func GetConfig() Config {
@@ -31,4 +33,10 @@ func GetGitTag() string {
 
 func GetGitCommit() string {
 	return GetConfig().GetGitCommit()
+}
+
+// Core definition
+
+func GetServiceCode() string {
+	return GetConfig().GetServiceCode()
 }

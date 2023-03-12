@@ -15,6 +15,8 @@ type Config struct {
 	BasePath  string
 	GitTag    string `env:"GIT_TAG,required"`
 	GitCommit string `env:"GIT_COMMIT,required"`
+
+	ServiceCode string `env:"SRV_CODE" envDefault:"S001"`
 }
 
 func GetConfig() *Config {
@@ -81,4 +83,14 @@ func GetGitCommit() string {
 
 func (config *Config) GetGitCommit() string {
 	return config.GitCommit
+}
+
+// Core definition
+
+func GetServiceCode() string {
+	return GetConfig().GetServiceCode()
+}
+
+func (config *Config) GetServiceCode() string {
+	return config.ServiceCode
 }
