@@ -8,9 +8,10 @@ import (
 
 var mJSON JSON
 
-type JSON = sonic.API
-
-type RawMessage = json.RawMessage
+type (
+	JSON       = sonic.API
+	RawMessage = json.RawMessage
+)
 
 func Marshal(v any) ([]byte, error) {
 	bytes, err := getJSON().Marshal(v)
