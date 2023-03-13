@@ -1,4 +1,4 @@
-package gbmmsg
+package gbmtmsg
 
 import (
 	"fmt"
@@ -32,55 +32,55 @@ var (
 var metaMessageMap = map[string]*MetaMessage{}
 
 type MetaMessage struct {
-	metaCode     string
-	httpCode     int
-	internalText string
-	externalCode string
-	externalText string
+	code     string
+	httpCode int
+	logText  string
+	outCode  string
+	outText  string
 }
 
-func NewMetaMessage(httpCode int, metaCode, externalText, internalText string) *MetaMessage {
-	metaMessageMap[metaCode] = (&builder{}).
+func NewMetaMessage(httpCode int, code, outText, logText string) *MetaMessage {
+	metaMessageMap[code] = (&builder{}).
 		initialize().
-		setMetaCode(metaCode).
+		setCode(code).
 		setHTTPCode(httpCode).
-		setInternalText(internalText).
-		setExternalCode().
-		setExternalText(externalText).
+		setLogText(logText).
+		setOutCode().
+		setOutText(outText).
 		build()
-	return metaMessageMap[metaCode]
+	return metaMessageMap[code]
 }
 
-func (metaMessage *MetaMessage) GetMetaCode() string {
-	return metaMessage.metaCode
+func (metaMessage *MetaMessage) GetCode() string {
+	return metaMessage.code
 }
 
 func (metaMessage *MetaMessage) GetHTTPCode() int {
 	return metaMessage.httpCode
 }
 
-func (metaMessage *MetaMessage) GetInternalText(internalArgs ...interface{}) string {
-	return fmt.Sprintf("(%s) %s", metaMessage.metaCode, fmt.Sprintf(metaMessage.internalText, internalArgs...))
+func (metaMessage *MetaMessage) GetLogText(logArgs ...any) string {
+	return fmt.Sprintf("(%s) %s", metaMessage.code, fmt.Sprintf(metaMessage.logText, logArgs...))
 }
 
-func (metaMessage *MetaMessage) GetExternalCode() string {
-	return metaMessage.externalCode
+func (metaMessage *MetaMessage) GetOutCode() string {
+	return metaMessage.outCode
 }
 
-func (metaMessage *MetaMessage) GetExternalText(externalArgs ...interface{}) string {
-	return fmt.Sprintf(metaMessage.externalText, externalArgs...)
+func (metaMessage *MetaMessage) GetOutText(outArgs ...any) string {
+	return fmt.Sprintf(metaMessage.outText, outArgs...)
 }
 
-func (metaMessage *MetaMessage) GetExternalStatus() bool {
+func (metaMessage *MetaMessage) GetOutStatus() bool {
 	return metaMessage.httpCode < http.StatusBadRequest
 }
 
 func (metaMessage *MetaMessage) String() string {
-	return fmt.Sprintf("<MetaMessage| metaCode: `%s`, httpCode: `%d`>",
-		metaMessage.metaCode, metaMessage.httpCode)
+	return fmt.Sprintf("<MetaMessage| code: `%s`, httpCode: `%d`>",
+		metaMessage.code, metaMessage.httpCode)
 }
 
-var metaCodeRegex = regexp.MustCompile(`^[A-Z]{3}[0-9]{3}$`)
+var metaMessageCodeRegex = regexp.MustCompile(`^[A-Z]{3}[0-9]{3}$`)
 
 type builder struct {
 	metaMessage *MetaMessage
@@ -95,14 +95,14 @@ func (builder *builder) initialize() *builder {
 	return builder
 }
 
-func (builder *builder) setMetaCode(metaCode string) *builder {
-	if _, ok := metaMessageMap[metaCode]; ok {
-		panic(fmt.Sprintf("Duplicate meta code `%s` is found.", metaCode))
+func (builder *builder) setCode(code string) *builder {
+	if _, ok := metaMessageMap[code]; ok {
+		panic(fmt.Sprintf("Duplicate meta message code `%s` is found.", code))
 	}
-	if ok := metaCodeRegex.MatchString(metaCode); !ok {
-		panic(fmt.Sprintf("Meta code `%s` cannot match regex `%s`.", metaCode, metaCodeRegex.String()))
+	if ok := metaMessageCodeRegex.MatchString(code); !ok {
+		panic(fmt.Sprintf("Meta message code `%s` cannot match regex `%s`.", code, metaMessageCodeRegex.String()))
 	}
-	builder.metaMessage.metaCode = metaCode
+	builder.metaMessage.code = code
 	return builder
 }
 
@@ -115,17 +115,17 @@ func (builder *builder) setHTTPCode(httpCode int) *builder {
 	return builder
 }
 
-func (builder *builder) setInternalText(internalText string) *builder {
-	builder.metaMessage.internalText = internalText
+func (builder *builder) setLogText(logText string) *builder {
+	builder.metaMessage.logText = logText
 	return builder
 }
 
-func (builder *builder) setExternalCode() *builder {
-	builder.metaMessage.externalCode = fmt.Sprintf("%s-%s", gbcfg.GetServiceCode(), builder.metaMessage.metaCode)
+func (builder *builder) setOutCode() *builder {
+	builder.metaMessage.outCode = fmt.Sprintf("%s-%s", gbcfg.GetServiceCode(), builder.metaMessage.code)
 	return builder
 }
 
-func (builder *builder) setExternalText(externalText string) *builder {
-	builder.metaMessage.externalText = externalText
+func (builder *builder) setOutText(outText string) *builder {
+	builder.metaMessage.outText = outText
 	return builder
 }

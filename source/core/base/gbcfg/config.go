@@ -8,6 +8,15 @@ type Config interface {
 	GetGitCommit() string
 
 	GetServiceCode() string
+	GetServiceName() string
+	GetServicePort() int
+	GetServiceProject() string
+	GetServiceVersion() string
+	GetServiceEnvironment() string
+	GetServiceLogLevel() string
+	GetServiceTesting() bool
+	GetServiceDebugging() bool
+	GetServiceDeveloping() bool
 }
 
 func GetConfig() Config {
@@ -39,4 +48,40 @@ func GetGitCommit() string {
 
 func GetServiceCode() string {
 	return GetConfig().GetServiceCode()
+}
+
+func GetServiceName() string {
+	return GetConfig().GetServiceName()
+}
+
+func GetServicePort() int {
+	return GetConfig().GetServicePort()
+}
+
+func GetServiceProject() string {
+	return GetConfig().GetServiceProject()
+}
+
+func GetServiceVersion() string {
+	return GetConfig().GetServiceVersion()
+}
+
+func GetServiceEnvironment() string {
+	return GetConfig().GetServiceEnvironment()
+}
+
+func GetServiceLogLevel() string {
+	return GetConfig().GetServiceLogLevel()
+}
+
+func GetServiceTesting() bool {
+	return GetConfig().GetServiceTesting()
+}
+
+func GetServiceDebugging() bool {
+	return GetConfig().GetServiceDebugging()
+}
+
+func GetServiceDeveloping() bool {
+	return GetConfig().GetServiceDeveloping()
 }
