@@ -44,42 +44,53 @@ func SetConfig() {
 }
 
 func newConfig() *Config {
-	config := (&Config{}).
+	config := (&builder{}).
 		initialize().
 		setConfig().
 		setBasePath().
-		setServiceDeveloping()
+		setServiceDeveloping().
+		build()
 	return config
 }
 
-func (config *Config) initialize() *Config {
+type builder struct {
+	config *Config
+}
+
+func (builder *builder) build() *Config {
+	return builder.config
+}
+
+func (builder *builder) initialize() *builder {
+	config := &Config{}
 	if err := env.Parse(config); err != nil {
 		panic(err)
 	}
-	return config
+	builder.config = config
+	return builder
 }
 
-func (config *Config) setConfig() *Config {
-	gbcfg.SetConfig(config)
-	return config
+func (builder *builder) setConfig() *builder {
+	gbcfg.SetConfig(builder.config)
+	return builder
 }
 
-func (config *Config) setBasePath() *Config {
+func (builder *builder) setBasePath() *builder {
 	_, modulePath, _, _ := runtime.Caller(0)
-	config.BasePath = path.Dir(path.Dir(path.Dir(path.Dir(modulePath))))
-	return config
+	builder.config.BasePath = path.Dir(path.Dir(path.Dir(path.Dir(modulePath))))
+	return builder
 }
 
-func (config *Config) setServiceDeveloping() *Config {
-	switch srvEnv := config.ServiceEnvironment; srvEnv {
+func (builder *builder) setServiceDeveloping() *builder {
+	switch srvEnv := builder.config.ServiceEnvironment; srvEnv {
 	case "local", "dev", "sit":
-		config.ServiceDeveloping = true
+		builder.config.ServiceDeveloping = true
 	case "uat", "stage", "prod":
-		config.ServiceDeveloping = false
+		builder.config.ServiceDeveloping = false
 	default:
 		panic(fmt.Sprintf("Unsupported service environment `%s`.", srvEnv))
 	}
-	return config
+	return builder
 }
 
 // Base definition

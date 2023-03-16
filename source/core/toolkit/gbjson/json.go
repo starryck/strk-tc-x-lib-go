@@ -13,16 +13,6 @@ type (
 	RawMessage = json.RawMessage
 )
 
-func Marshal(v any) ([]byte, error) {
-	bytes, err := getJSON().Marshal(v)
-	return bytes, err
-}
-
-func Unmarshal(data []byte, v any) error {
-	err := getJSON().Unmarshal(data, v)
-	return err
-}
-
 func getJSON() JSON {
 	if mJSON == nil {
 		mJSON = newJSON()
@@ -35,4 +25,14 @@ func newJSON() JSON {
 		CompactMarshaler: true,
 	}.Froze()
 	return json
+}
+
+func Marshal(v any) ([]byte, error) {
+	bytes, err := getJSON().Marshal(v)
+	return bytes, err
+}
+
+func Unmarshal(data []byte, v any) error {
+	err := getJSON().Unmarshal(data, v)
+	return err
 }

@@ -1,8 +1,8 @@
 package gbcfg
 
-var mConfig Config
+var mConfig SpecConfig
 
-type Config interface {
+type SpecConfig interface {
 	GetBasePath() string
 	GetGitTag() string
 	GetGitCommit() string
@@ -19,14 +19,14 @@ type Config interface {
 	GetServiceDeveloping() bool
 }
 
-func GetConfig() Config {
+func GetConfig() SpecConfig {
 	if mConfig == nil {
 		panic("Config hasn't been created.")
 	}
 	return mConfig
 }
 
-func SetConfig(config Config) {
+func SetConfig(config SpecConfig) {
 	mConfig = config
 }
 

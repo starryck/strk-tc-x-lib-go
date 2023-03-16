@@ -83,7 +83,7 @@ func Wrapf(message string, args []any, errs ...error) *WrapError {
 }
 
 func (err *WrapError) Error() string {
-	return fmt.Sprintf("<WrapError| %s> caused from: %v", err.message, err.errs)
+	return fmt.Sprintf("<WrapError| %s> is caused from: %v", err.message, err.errs)
 }
 
 func (err *WrapError) Unwrap() []error {
@@ -134,7 +134,7 @@ func Internal(message *Message, options *Options, errs ...error) *InternalError 
 }
 
 func (err *InternalError) Error() string {
-	return fmt.Sprintf("<InternalError| %s> caused from: %v", err.LogText(), err.errs)
+	return fmt.Sprintf("<InternalError| %s> is caused from: %v", err.LogText(), err.errs)
 }
 
 func (err *InternalError) Unwrap() []error {
@@ -215,7 +215,7 @@ func Validation(message *Message, options *Options, errs ...error) *ValidationEr
 }
 
 func (err *ValidationError) Error() string {
-	return fmt.Sprintf("<ValidationError| %s> caused from: %v", err.LogText(), err.errs)
+	return fmt.Sprintf("<ValidationError| %s> is caused from: %v", err.LogText(), err.errs)
 }
 
 type UnexpectedError struct {
@@ -229,5 +229,5 @@ func Unexpected(message *Message, options *Options, errs ...error) *UnexpectedEr
 }
 
 func (err *UnexpectedError) Error() string {
-	return fmt.Sprintf("<UnexpectedError| %s> caused from: %v", err.LogText(), err.errs)
+	return fmt.Sprintf("<UnexpectedError| %s> is caused from: %v", err.LogText(), err.errs)
 }
