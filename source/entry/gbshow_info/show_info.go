@@ -1,15 +1,14 @@
 package gbshow_info
 
 import (
-	"fmt"
-
+	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gblog"
 	"github.com/forbot161602/pbc-golang-lib/source/entry/gbconfig"
 )
 
 func Execute() error {
-	fmt.Println(map[string]string{
+	gblog.WithFields(gblog.Fields{
 		"gitTag":    gbconfig.GetGitTag(),
 		"gitCommit": gbconfig.GetGitCommit(),
-	})
+	}).Info("Log info message.")
 	return nil
 }

@@ -25,7 +25,11 @@ func AsWrapError(err error) (target *WrapError, ok bool) {
 	return target, As(err, &target)
 }
 
-func AsGenericError(err error) (target GenericError, ok bool) {
+func AsBundleError(err error) (target BundleError, ok bool) {
+	return target, As(err, &target)
+}
+
+func AsCustomError(err error) (target CustomError, ok bool) {
 	return target, As(err, &target)
 }
 
@@ -39,6 +43,16 @@ func AsValidationError(err error) (target *ValidationError, ok bool) {
 
 func AsUnexpectedError(err error) (target *UnexpectedError, ok bool) {
 	return target, As(err, &target)
+}
+
+func Unwrap(err error) []error {
+	if uerr := errors.Unwrap(err); uerr != nil {
+		return []error{uerr}
+	}
+	if berr, ok := err.(BundleError); ok {
+		return berr.Unwrap()
+	}
+	return nil
 }
 
 func Aggravate(err error) error {
@@ -90,13 +104,18 @@ func (err *WrapError) Unwrap() []error {
 	return err.errs
 }
 
-type GenericError interface {
+type BundleError interface {
 	Error() string
 	Unwrap() []error
+}
+
+type CustomError interface {
+	BundleError
 	Message() *Message
 	Options() *Options
 	OutText() string
 	LogText() string
+	LogFields() LogFields
 }
 
 type InternalError struct {
@@ -155,6 +174,10 @@ func (err *InternalError) OutText() string {
 
 func (err *InternalError) LogText() string {
 	return err.message.GetLogText(err.logArgs...)
+}
+
+func (err *InternalError) LogFields() LogFields {
+	return err.logFields
 }
 
 type internalErrorBuilder struct {
