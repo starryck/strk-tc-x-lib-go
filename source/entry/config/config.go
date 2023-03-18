@@ -1,4 +1,4 @@
-package gbconfig
+package config
 
 import (
 	"fmt"

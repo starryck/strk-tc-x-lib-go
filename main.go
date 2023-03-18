@@ -5,9 +5,9 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	_ "github.com/forbot161602/pbc-golang-lib/source/entry/gbpreset"
-	"github.com/forbot161602/pbc-golang-lib/source/entry/gbrun_script"
-	"github.com/forbot161602/pbc-golang-lib/source/entry/gbshow_info"
+	_ "github.com/forbot161602/pbc-golang-lib/source/entry/preset"
+	"github.com/forbot161602/pbc-golang-lib/source/entry/run_script"
+	"github.com/forbot161602/pbc-golang-lib/source/entry/show_info"
 )
 
 var (
@@ -35,7 +35,7 @@ func init() {
 				HelpName:  "run-script",
 				ArgsUsage: "[arguments...]",
 				Action: func(c *cli.Context) error {
-					return gbrun_script.Execute()
+					return run_script.Execute()
 				},
 			},
 			&cli.Command{
@@ -44,7 +44,7 @@ func init() {
 				HelpName:  "show-info",
 				ArgsUsage: "[arguments...]",
 				Action: func(c *cli.Context) error {
-					return gbshow_info.Execute()
+					return show_info.Execute()
 				},
 			},
 		},

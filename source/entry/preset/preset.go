@@ -1,4 +1,4 @@
-package gbpreset
+package preset
 
 import (
 	"fmt"
@@ -7,13 +7,13 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/forbot161602/pbc-golang-lib/source/entry/gbconfig"
+	"github.com/forbot161602/pbc-golang-lib/source/entry/config"
 )
 
 func init() {
 	if err := godotenv.Load(); err == nil {
 		fmt.Println("[INFO] The .env file has been successfully loaded.")
 	}
-	gbconfig.SetConfig()
+	config.SetConfig()
 	rand.Seed(time.Now().UnixNano())
 }

@@ -14,8 +14,6 @@ import (
 	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gberr"
 )
 
-const MinStackFrameSkip = 6
-
 var mLogger *Logger
 
 var (
@@ -191,6 +189,8 @@ func (jsonifier *jsonifier) Format(entry *Entry) ([]byte, error) {
 	return bytes, err
 }
 
+const minStackFrameSkip = 6
+
 type jsonBuilder struct {
 	entry *Entry
 	data  Fields
@@ -224,7 +224,7 @@ func (builder *jsonBuilder) setMessage() *jsonBuilder {
 }
 
 func (builder *jsonBuilder) setCaller() *jsonBuilder {
-	skip := MinStackFrameSkip
+	skip := minStackFrameSkip
 	if value, ok := builder.entry.Data[SkipKey]; ok {
 		if offset, ok := value.(int); ok {
 			skip += offset

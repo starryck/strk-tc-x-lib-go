@@ -1,4 +1,4 @@
-package gbrun_script
+package run_script
 
 func Execute() error {
 	return nil
