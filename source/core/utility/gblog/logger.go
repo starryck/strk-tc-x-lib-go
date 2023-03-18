@@ -2,6 +2,7 @@ package gblog
 
 import (
 	"fmt"
+	"reflect"
 	"runtime"
 	"strings"
 	"time"
@@ -168,11 +169,9 @@ func (builder *builder) setSeverity() *builder {
 }
 
 func (builder *builder) setFormatter() *builder {
-	builder.logger.SetFormatter(mJsonifier)
+	builder.logger.SetFormatter(&jsonifier{})
 	return builder
 }
-
-var mJsonifier = &jsonifier{}
 
 type jsonifier struct{}
 
@@ -189,7 +188,10 @@ func (jsonifier *jsonifier) Format(entry *Entry) ([]byte, error) {
 	return bytes, err
 }
 
-const minStackFrameSkip = 6
+const (
+	minCallerFrameSkip = 7
+	maxCallerFrameSize = 1 << 5
+)
 
 type jsonBuilder struct {
 	entry *Entry
@@ -224,7 +226,7 @@ func (builder *jsonBuilder) setMessage() *jsonBuilder {
 }
 
 func (builder *jsonBuilder) setCaller() *jsonBuilder {
-	skip := minStackFrameSkip
+	skip := minCallerFrameSkip
 	if value, ok := builder.entry.Data[SkipKey]; ok {
 		if offset, ok := value.(int); ok {
 			skip += offset
@@ -233,9 +235,9 @@ func (builder *jsonBuilder) setCaller() *jsonBuilder {
 		}
 		delete(builder.entry.Data, SkipKey)
 	}
-	if pc, file, line, ok := runtime.Caller(skip); ok {
-		name := gbslice.Last(strings.Split(runtime.FuncForPC(pc).Name(), "."))
-		builder.data["caller"] = fmt.Sprintf("%s:%s:%d", file, name, line)
+	if caller := getCallerTracer().source(skip); caller != nil {
+		callerFunc := gbslice.Last(strings.Split(caller.Function, "/"))
+		builder.data["caller"] = fmt.Sprintf("%s:%d:%s", caller.File, caller.Line, callerFunc)
 	}
 	return builder
 }
@@ -268,10 +270,88 @@ func (builder *jsonBuilder) setErrorFields(fields Fields, err error) {
 func (builder *jsonBuilder) setBytes() *jsonBuilder {
 	bytes, err := gbjson.Marshal(builder.data)
 	if err != nil {
-		err = gberr.Wrapf("fail to JSON marshal data: `%#v`", []any{builder.data}, err)
+		err = gberr.Wrapf("Fail to JSON marshal data: `%#v`", []any{builder.data}, err)
 	} else {
 		bytes = append(bytes, '\n')
 	}
 	builder.bytes, builder.err = bytes, err
+	return builder
+}
+
+var mCallerTracer *callerTracer
+
+type callerTracer struct {
+	skipFiles  map[string]bool
+	loggerFile string
+	logrusPath string
+}
+
+func getCallerTracer() *callerTracer {
+	if mCallerTracer == nil {
+		mCallerTracer = newCallerTracer()
+	}
+	return mCallerTracer
+}
+
+func newCallerTracer() *callerTracer {
+	callerTracer := (&callerTracerBuilder{}).
+		initialize().
+		setSkipFiles().
+		setLoggerFile().
+		setLogrusPath().
+		build()
+	return callerTracer
+}
+
+func (tracer *callerTracer) source(skip int) *runtime.Frame {
+	pcs := make([]uintptr, maxCallerFrameSize)
+	if count := runtime.Callers(skip, pcs); count == 0 {
+		return nil
+	}
+	frames := runtime.CallersFrames(pcs)
+	for {
+		frame, ok := frames.Next()
+		if !ok {
+			return nil
+		}
+		file := frame.File
+		if _, ok := tracer.skipFiles[file]; ok {
+			continue
+		}
+		if strings.Contains(file, tracer.logrusPath) {
+			tracer.skipFiles[file] = true
+			continue
+		}
+		return &frame
+	}
+}
+
+type callerTracerBuilder struct {
+	callerTracer *callerTracer
+}
+
+func (builder *callerTracerBuilder) build() *callerTracer {
+	return builder.callerTracer
+}
+
+func (builder *callerTracerBuilder) initialize() *callerTracerBuilder {
+	builder.callerTracer = &callerTracer{}
+	return builder
+}
+
+func (builder *callerTracerBuilder) setSkipFiles() *callerTracerBuilder {
+	builder.callerTracer.skipFiles = make(map[string]bool, maxCallerFrameSize)
+	return builder
+}
+
+func (builder *callerTracerBuilder) setLoggerFile() *callerTracerBuilder {
+	_, file, _, _ := runtime.Caller(0)
+	builder.callerTracer.loggerFile = file
+	builder.callerTracer.skipFiles[file] = true
+	return builder
+}
+
+func (builder *callerTracerBuilder) setLogrusPath() *callerTracerBuilder {
+	builder.callerTracer.logrusPath = reflect.TypeOf(logrus.Logger{}).PkgPath()
 	return builder
 }

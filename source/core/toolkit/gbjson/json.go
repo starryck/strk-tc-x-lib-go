@@ -22,6 +22,7 @@ func getJSON() JSON {
 
 func newJSON() JSON {
 	json := sonic.Config{
+		SortMapKeys:      true,
 		CompactMarshaler: true,
 	}.Froze()
 	return json

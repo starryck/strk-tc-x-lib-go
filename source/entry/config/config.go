@@ -88,7 +88,7 @@ func (builder *builder) setServiceDeveloping() *builder {
 	case "uat", "stage", "prod":
 		builder.config.ServiceDeveloping = false
 	default:
-		panic(fmt.Sprintf("Unsupported service environment `%s`.", srvEnv))
+		panic(fmt.Sprintf("Config does not support service environment `%s`.", srvEnv))
 	}
 	return builder
 }
