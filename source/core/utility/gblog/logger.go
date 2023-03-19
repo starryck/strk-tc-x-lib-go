@@ -281,9 +281,9 @@ func (builder *jsonBuilder) setBytes() *jsonBuilder {
 var mCallerTracer *callerTracer
 
 type callerTracer struct {
-	skipFiles  map[string]bool
-	loggerFile string
-	logrusPath string
+	loggerFile  string
+	logrusPath  string
+	skipFileSet map[string]bool
 }
 
 func getCallerTracer() *callerTracer {
@@ -296,9 +296,9 @@ func getCallerTracer() *callerTracer {
 func newCallerTracer() *callerTracer {
 	callerTracer := (&callerTracerBuilder{}).
 		initialize().
-		setSkipFiles().
 		setLoggerFile().
 		setLogrusPath().
+		setSkipFileSet().
 		build()
 	return callerTracer
 }
@@ -315,11 +315,11 @@ func (tracer *callerTracer) source(skip int) *runtime.Frame {
 			return nil
 		}
 		file := frame.File
-		if _, ok := tracer.skipFiles[file]; ok {
+		if _, ok := tracer.skipFileSet[file]; ok {
 			continue
 		}
 		if strings.Contains(file, tracer.logrusPath) {
-			tracer.skipFiles[file] = true
+			tracer.skipFileSet[file] = true
 			continue
 		}
 		return &frame
@@ -339,19 +339,20 @@ func (builder *callerTracerBuilder) initialize() *callerTracerBuilder {
 	return builder
 }
 
-func (builder *callerTracerBuilder) setSkipFiles() *callerTracerBuilder {
-	builder.callerTracer.skipFiles = make(map[string]bool, maxCallerFrameSize)
-	return builder
-}
-
 func (builder *callerTracerBuilder) setLoggerFile() *callerTracerBuilder {
 	_, file, _, _ := runtime.Caller(0)
 	builder.callerTracer.loggerFile = file
-	builder.callerTracer.skipFiles[file] = true
 	return builder
 }
 
 func (builder *callerTracerBuilder) setLogrusPath() *callerTracerBuilder {
 	builder.callerTracer.logrusPath = reflect.TypeOf(logrus.Logger{}).PkgPath()
+	return builder
+}
+
+func (builder *callerTracerBuilder) setSkipFileSet() *callerTracerBuilder {
+	fileSet := make(map[string]bool, maxCallerFrameSize)
+	fileSet[builder.callerTracer.loggerFile] = true
+	builder.callerTracer.skipFileSet = fileSet
 	return builder
 }

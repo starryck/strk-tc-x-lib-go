@@ -7,6 +7,7 @@ type SpecConfig interface {
 	GetGitTag() string
 	GetGitCommit() string
 
+	GetServiceID() string
 	GetServiceCode() string
 	GetServiceName() string
 	GetServicePort() int
@@ -45,6 +46,10 @@ func GetGitCommit() string {
 }
 
 // Core definition
+
+func GetServiceID() string {
+	return GetConfig().GetServiceID()
+}
 
 func GetServiceCode() string {
 	return GetConfig().GetServiceCode()
