@@ -7,11 +7,55 @@ import (
 
 	"github.com/caarlos0/env/v7"
 
+	"github.com/forbot161602/pbc-golang-lib/source/core/base/gbcfg"
 	"github.com/forbot161602/pbc-golang-lib/source/core/base/gbconst"
 	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbidtf"
 )
 
-var mConfig *Config
+func NewConfig() *Config {
+	config := (&builder{}).initialize().
+		parseEnv().
+		setBasePath().
+		setServiceID().
+		setServiceDeveloping().
+		build()
+	return config
+}
+
+var ServiceEnvironmentDevelopingMap = map[string]bool{
+	gbconst.EnvironmentLocal: true,
+	gbconst.EnvironmentDev:   true,
+	gbconst.EnvironmentSIT:   true,
+	gbconst.EnvironmentUAT:   false,
+	gbconst.EnvironmentStage: false,
+	gbconst.EnvironmentProd:  false,
+}
+
+func ParseEnv(config gbcfg.SpecConfig) {
+	if err := env.Parse(config); err != nil {
+		panic(err)
+	}
+}
+
+func MakeBasePath(back int) string {
+	_, dir, _, _ := runtime.Caller(1)
+	for i := 0; i < back; i++ {
+		dir = path.Dir(dir)
+	}
+	return dir
+}
+
+func MakeServiceID() string {
+	return gbidtf.MakeUUID4()
+}
+
+func MakeServiceDeveloping(srvEnv string) bool {
+	if yes, ok := ServiceEnvironmentDevelopingMap[srvEnv]; ok {
+		return yes
+	} else {
+		panic(fmt.Sprintf("Config does not support service environment `%s`.", srvEnv))
+	}
+}
 
 type Config struct {
 	BasePath  string
@@ -29,51 +73,6 @@ type Config struct {
 	ServiceTesting     bool   `env:"SRV_TESTING" envDefault:"false"`
 	ServiceDebugging   bool   `env:"SRV_DEBUGGING" envDefault:"false"`
 	ServiceDeveloping  bool
-}
-
-var EnvironmentDevelopingMap = map[string]bool{
-	gbconst.EnvironmentLocal: true,
-	gbconst.EnvironmentDev:   true,
-	gbconst.EnvironmentSIT:   true,
-	gbconst.EnvironmentUAT:   false,
-	gbconst.EnvironmentStage: false,
-	gbconst.EnvironmentProd:  false,
-}
-
-func (config *Config) Build() *Config {
-	config.ParseEnv().
-		SetBasePath().
-		SetServiceID().
-		SetServiceDeveloping()
-	return config
-}
-
-func (config *Config) ParseEnv() *Config {
-	if err := env.Parse(config); err != nil {
-		panic(err)
-	}
-	return config
-}
-
-func (config *Config) SetBasePath() *Config {
-	_, file, _, _ := runtime.Caller(0)
-	config.BasePath = path.Dir(path.Dir(path.Dir(path.Dir(file))))
-	return config
-}
-
-func (config *Config) SetServiceID() *Config {
-	config.ServiceID = gbidtf.MakeUUID4()
-	return config
-}
-
-func (config *Config) SetServiceDeveloping() *Config {
-	srvEnv := config.ServiceEnvironment
-	if yes, ok := EnvironmentDevelopingMap[srvEnv]; ok {
-		config.ServiceDeveloping = yes
-	} else {
-		panic(fmt.Sprintf("Config does not support service environment `%s`.", srvEnv))
-	}
-	return config
 }
 
 // Base definition
@@ -134,4 +133,37 @@ func (config *Config) GetServiceDebugging() bool {
 
 func (config *Config) GetServiceDeveloping() bool {
 	return config.ServiceDeveloping
+}
+
+type builder struct {
+	config *Config
+}
+
+func (builder *builder) build() *Config {
+	return builder.config
+}
+
+func (builder *builder) initialize() *builder {
+	builder.config = &Config{}
+	return builder
+}
+
+func (builder *builder) parseEnv() *builder {
+	ParseEnv(builder.config)
+	return builder
+}
+
+func (builder *builder) setBasePath() *builder {
+	builder.config.BasePath = MakeBasePath(4)
+	return builder
+}
+
+func (builder *builder) setServiceID() *builder {
+	builder.config.ServiceID = MakeServiceID()
+	return builder
+}
+
+func (builder *builder) setServiceDeveloping() *builder {
+	builder.config.ServiceDeveloping = MakeServiceDeveloping(builder.config.ServiceEnvironment)
+	return builder
 }

@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/bytedance/sonic v1.8.3
 	github.com/caarlos0/env/v7 v7.1.0
-	github.com/gofrs/uuid v4.4.0+incompatible
+	github.com/gofrs/uuid/v5 v5.0.0
 	github.com/joho/godotenv v1.5.1
 	github.com/rs/xid v1.4.0
 	github.com/segmentio/ksuid v1.0.4

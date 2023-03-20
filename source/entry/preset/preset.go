@@ -16,5 +16,5 @@ func init() {
 		fmt.Println("[INFO] The .env file has been successfully loaded.")
 	}
 	rand.Seed(time.Now().UnixNano())
-	gbcfg.SetConfig((&precfg.Config{}).Build())
+	gbcfg.SetConfig(precfg.NewConfig())
 }

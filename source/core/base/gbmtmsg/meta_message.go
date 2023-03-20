@@ -31,14 +31,6 @@ var (
 
 var metaMessageMap = map[string]*MetaMessage{}
 
-type MetaMessage struct {
-	code     string
-	httpCode int
-	logText  string
-	outCode  string
-	outText  string
-}
-
 func NewMetaMessage(httpCode int, code, outText, logText string) *MetaMessage {
 	metaMessageMap[code] = (&builder{}).
 		initialize().
@@ -49,6 +41,14 @@ func NewMetaMessage(httpCode int, code, outText, logText string) *MetaMessage {
 		setOutText(outText).
 		build()
 	return metaMessageMap[code]
+}
+
+type MetaMessage struct {
+	code     string
+	httpCode int
+	logText  string
+	outCode  string
+	outText  string
 }
 
 func (metaMessage *MetaMessage) GetCode() string {

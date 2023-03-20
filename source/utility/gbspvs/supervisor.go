@@ -16,26 +16,6 @@ import (
 
 var mSupervisor *Supervisor
 
-type Supervisor struct {
-	daemons       []*Daemon
-	exitCode      int
-	waitGroup     *sync.WaitGroup
-	waitChannel   chan struct{}
-	rootContext   context.Context
-	rootCanceller context.CancelFunc
-	signalChannel chan os.Signal
-
-	gracefulTimeout   time.Duration
-	heartbeatInterval time.Duration
-}
-
-type Process interface {
-	Setup() error
-	Start(ctx context.Context) error
-}
-
-type Operate func(args ...any)
-
 func GetSupervisor(options *Options) *Supervisor {
 	if mSupervisor == nil {
 		mSupervisor = newSupervisor(options)
@@ -76,6 +56,26 @@ func WithWaitGroup(operate Operate, args ...any) {
 	defer wg.Done()
 	operate(args...)
 	return
+}
+
+type Operate func(args ...any)
+
+type Process interface {
+	Setup() error
+	Start(ctx context.Context) error
+}
+
+type Supervisor struct {
+	daemons       []*Daemon
+	exitCode      int
+	waitGroup     *sync.WaitGroup
+	waitChannel   chan struct{}
+	rootContext   context.Context
+	rootCanceller context.CancelFunc
+	signalChannel chan os.Signal
+
+	gracefulTimeout   time.Duration
+	heartbeatInterval time.Duration
 }
 
 func (supervisor *Supervisor) Handle(process Process) {
@@ -184,11 +184,42 @@ func (supervisor *Supervisor) makeLoggerFields() gblog.Fields {
 	}
 }
 
+type Daemon struct {
+	process  Process
+	typeName string
+	isActive bool
+}
+
+func (daemon *Daemon) setup() {
+	if err := daemon.process.Setup(); err != nil {
+		panic(err)
+	}
+}
+
+func (daemon *Daemon) start(ctx context.Context) {
+	fields := gblog.Fields{"daemon": daemon.String()}
+	if err := daemon.process.Start(ctx); err == nil {
+		gblog.WithFields(fields).Info("Daemon succeeded in exiting process.")
+	} else {
+		gblog.WithFields(fields).WithError(err).Error("Daemon failed to exit process.")
+	}
+}
+
+func (daemon *Daemon) stamp() {
+	daemon.isActive = false
+}
+
+func (daemon *Daemon) String() string {
+	return fmt.Sprintf("<Daemon| typeName: `%s`, isActive: `%v`>", daemon.typeName, daemon.isActive)
+}
+
 const (
 	exitCodeDefault = -1 + iota
 	exitCodeSuccess
 	exitCodeFailure
+)
 
+const (
 	defaultGracefulTimeout   = 30 * time.Second
 	defaultHeartbeatInterval = 5 * time.Minute
 )
@@ -258,35 +289,6 @@ func (builder *builder) setHeartbeatInterval() *builder {
 		builder.supervisor.heartbeatInterval = defaultHeartbeatInterval
 	}
 	return builder
-}
-
-type Daemon struct {
-	process  Process
-	typeName string
-	isActive bool
-}
-
-func (daemon *Daemon) setup() {
-	if err := daemon.process.Setup(); err != nil {
-		panic(err)
-	}
-}
-
-func (daemon *Daemon) start(ctx context.Context) {
-	fields := gblog.Fields{"daemon": daemon.String()}
-	if err := daemon.process.Start(ctx); err == nil {
-		gblog.WithFields(fields).Info("Daemon succeeded in exiting process.")
-	} else {
-		gblog.WithFields(fields).WithError(err).Error("Daemon failed to exit process.")
-	}
-}
-
-func (daemon *Daemon) stamp() {
-	daemon.isActive = false
-}
-
-func (daemon *Daemon) String() string {
-	return fmt.Sprintf("<Daemon| typeName: `%s`, isActive: `%v`>", daemon.typeName, daemon.isActive)
 }
 
 type ServerProcess struct {
