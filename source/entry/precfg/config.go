@@ -9,7 +9,7 @@ import (
 
 	"github.com/forbot161602/pbc-golang-lib/source/core/base/gbcfg"
 	"github.com/forbot161602/pbc-golang-lib/source/core/base/gbconst"
-	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbidtf"
+	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbrand"
 )
 
 func NewConfig() *Config {
@@ -46,7 +46,7 @@ func MakeBasePath(back int) string {
 }
 
 func MakeServiceID() string {
-	return gbidtf.MakeUUID4()
+	return gbrand.MakeUUID4()
 }
 
 func MakeServiceDeveloping(srvEnv string) bool {

@@ -1,4 +1,4 @@
-package gbidtf
+package gbrand
 
 import (
 	"github.com/gofrs/uuid/v5"
