@@ -47,9 +47,10 @@ func Base32EncodeBtob(src []byte) []byte {
 }
 
 func Base32DecodeBtob(src []byte) ([]byte, error) {
-	dst := make([]byte, int(math.Ceil(float64(len(src))/8)*5))
-	_, err := base32.StdEncoding.Decode(dst, src)
-	return bytes.TrimRight(dst, "\x00"), err
+	src = bytes.TrimRight(src, string(base32.StdPadding))
+	dst := make([]byte, int(math.Floor(float64(len(src))/8*5)))
+	_, err := base32.StdEncoding.WithPadding(base32.NoPadding).Decode(dst, src)
+	return dst, err
 }
 
 func Base32EncodeBtoa(src []byte) string {
@@ -81,7 +82,7 @@ func Base32URLEncodeBtob(src []byte) []byte {
 func Base32URLDecodeBtob(src []byte) ([]byte, error) {
 	dst := make([]byte, int(math.Floor(float64(len(src))/8*5)))
 	_, err := base32.StdEncoding.WithPadding(base32.NoPadding).Decode(dst, src)
-	return bytes.TrimRight(dst, "\x00"), err
+	return dst, err
 }
 
 func Base32URLEncodeBtoa(src []byte) string {
@@ -111,9 +112,10 @@ func Base64EncodeBtob(src []byte) []byte {
 }
 
 func Base64DecodeBtob(src []byte) ([]byte, error) {
-	dst := make([]byte, int(math.Floor(float64(len(src))/4)*3))
-	_, err := base64.StdEncoding.Decode(dst, src)
-	return bytes.TrimRight(dst, "\x00"), err
+	src = bytes.TrimRight(src, string(base64.StdPadding))
+	dst := make([]byte, int(math.Floor(float64(len(src))/4*3)))
+	_, err := base64.RawStdEncoding.Decode(dst, src)
+	return dst, err
 }
 
 func Base64EncodeBtoa(src []byte) string {
@@ -145,7 +147,7 @@ func Base64URLEncodeBtob(src []byte) []byte {
 func Base64URLDecodeBtob(src []byte) ([]byte, error) {
 	dst := make([]byte, int(math.Floor(float64(len(src))/4*3)))
 	_, err := base64.RawURLEncoding.Decode(dst, src)
-	return bytes.TrimRight(dst, "\x00"), err
+	return dst, err
 }
 
 func Base64URLEncodeBtoa(src []byte) string {
