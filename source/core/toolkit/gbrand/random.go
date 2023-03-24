@@ -6,6 +6,8 @@ import (
 	"github.com/gofrs/uuid/v5"
 	"github.com/rs/xid"
 	"github.com/segmentio/ksuid"
+
+	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbradix"
 )
 
 func MakeXID() string {
@@ -23,8 +25,6 @@ func MakeUUID4() string {
 	return id
 }
 
-var alphanumBytes = []byte("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
-
 func MakeBytes(length int) []byte {
 	buf := make([]byte, length)
 	if _, err := rand.Read(buf); err != nil {
@@ -34,21 +34,22 @@ func MakeBytes(length int) []byte {
 	}
 }
 
-func MakeBaseBytes(charset []byte, base byte, length int) []byte {
+func MakeBaseNBytes(length int, radixes []byte) []byte {
 	src := MakeBytes(length)
 	dst := make([]byte, length)
+	base := byte(len(radixes))
 	for i := 0; i < length; i++ {
-		dst[i] = charset[src[i]%base]
+		dst[i] = radixes[src[i]%base]
 	}
 	return dst
 }
 
-func MakeBaseString(charset []byte, base byte, length int) string {
-	return string(MakeBaseBytes(charset, base, length))
+func MakeBaseNString(length int, radixes []byte) string {
+	return string(MakeBaseNBytes(length, radixes))
 }
 
 func MakeBase10Bytes(length int) []byte {
-	return MakeBaseBytes(alphanumBytes, 10, length)
+	return MakeBaseNBytes(length, gbradix.Base10Bytes)
 }
 
 func MakeBase10String(length int) string {
@@ -56,7 +57,7 @@ func MakeBase10String(length int) string {
 }
 
 func MakeBase16Bytes(length int) []byte {
-	return MakeBaseBytes(alphanumBytes, 16, length)
+	return MakeBaseNBytes(length, gbradix.Base16Bytes)
 }
 
 func MakeBase16String(length int) string {
@@ -64,7 +65,7 @@ func MakeBase16String(length int) string {
 }
 
 func MakeBase36Bytes(length int) []byte {
-	return MakeBaseBytes(alphanumBytes, 36, length)
+	return MakeBaseNBytes(length, gbradix.Base36Bytes)
 }
 
 func MakeBase36String(length int) string {
@@ -72,7 +73,7 @@ func MakeBase36String(length int) string {
 }
 
 func MakeBase62Bytes(length int) []byte {
-	return MakeBaseBytes(alphanumBytes, 62, length)
+	return MakeBaseNBytes(length, gbradix.Base62Bytes)
 }
 
 func MakeBase62String(length int) string {

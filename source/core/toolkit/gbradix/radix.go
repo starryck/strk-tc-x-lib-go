@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"math"
+	"strings"
 )
 
 func Base16EncodeBtob(src []byte) []byte {
@@ -168,4 +169,94 @@ func Base64URLEncodeAtoa(src string) string {
 func Base64URLDecodeAtoa(src string) (string, error) {
 	dst, err := Base64URLDecodeAtob(src)
 	return string(dst), err
+}
+
+var (
+	Base10Bytes    = []byte("0123456789")
+	Base16Bytes    = []byte("0123456789ABCDEF")
+	Base36Bytes    = []byte("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	Base62Bytes    = []byte("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+	Base10IndexMap = map[byte]int64{}
+	Base16IndexMap = map[byte]int64{}
+	Base36IndexMap = map[byte]int64{}
+	Base62IndexMap = map[byte]int64{}
+)
+
+func init() {
+	for idx, byt := range Base10Bytes {
+		Base10IndexMap[byt] = int64(idx)
+	}
+	for idx, byt := range Base16Bytes {
+		Base16IndexMap[byt] = int64(idx)
+	}
+	for idx, byt := range Base36Bytes {
+		Base36IndexMap[byt] = int64(idx)
+	}
+	for idx, byt := range Base62Bytes {
+		Base62IndexMap[byt] = int64(idx)
+	}
+}
+
+func BaseNEncodeItoa(num int64, radixes []byte) string {
+	if num == 0 {
+		return string(radixes[0])
+	}
+	base := uint64(len(radixes))
+	unum := uint64(math.Abs(float64(num)))
+	size := int(math.Log10(float64(unum))/math.Log10(float64(base))) + 1
+	rdxs := make([]string, size)
+	for i := size - 1; i >= 0; i-- {
+		rdxs[i] = string(radixes[unum%base])
+		unum = unum / base
+	}
+	rstr := strings.Join(rdxs, "")
+	if num < 0 {
+		rstr = "-" + rstr
+	}
+	return rstr
+}
+
+func BaseNDecodeAtoi(rstr string, indexes map[byte]int64) int64 {
+	base := int64(len(indexes))
+	inum := int64(0)
+	sign := int64(1)
+	if strings.HasPrefix(rstr, "-") {
+		sign = int64(-1)
+	}
+	for _, rdx := range rstr {
+		inum = inum*base + sign*indexes[byte(rdx)]
+	}
+	return inum
+}
+
+func Base10EncodeItoa(num int64) string {
+	return BaseNEncodeItoa(num, Base10Bytes)
+}
+
+func Base10DecodeAtoi(rstr string) int64 {
+	return BaseNDecodeAtoi(rstr, Base10IndexMap)
+}
+
+func Base16EncodeItoa(num int64) string {
+	return BaseNEncodeItoa(num, Base16Bytes)
+}
+
+func Base16DecodeAtoi(rstr string) int64 {
+	return BaseNDecodeAtoi(rstr, Base16IndexMap)
+}
+
+func Base36EncodeItoa(num int64) string {
+	return BaseNEncodeItoa(num, Base36Bytes)
+}
+
+func Base36DecodeAtoi(rstr string) int64 {
+	return BaseNDecodeAtoi(rstr, Base36IndexMap)
+}
+
+func Base62EncodeItoa(num int64) string {
+	return BaseNEncodeItoa(num, Base62Bytes)
+}
+
+func Base62DecodeAtoi(rstr string) int64 {
+	return BaseNDecodeAtoi(rstr, Base62IndexMap)
 }
