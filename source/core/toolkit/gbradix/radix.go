@@ -183,17 +183,15 @@ var (
 )
 
 func init() {
-	for idx, byt := range Base10Bytes {
-		Base10IndexMap[byt] = int64(idx)
-	}
-	for idx, byt := range Base16Bytes {
-		Base16IndexMap[byt] = int64(idx)
-	}
-	for idx, byt := range Base36Bytes {
-		Base36IndexMap[byt] = int64(idx)
-	}
-	for idx, byt := range Base62Bytes {
-		Base62IndexMap[byt] = int64(idx)
+	initBaseNIndexes(Base10Bytes, Base10IndexMap)
+	initBaseNIndexes(Base16Bytes, Base16IndexMap)
+	initBaseNIndexes(Base36Bytes, Base36IndexMap)
+	initBaseNIndexes(Base62Bytes, Base62IndexMap)
+}
+
+func initBaseNIndexes(radixes []byte, indexes map[byte]int64) {
+	for idx, byt := range radixes {
+		indexes[byt] = int64(idx)
 	}
 }
 

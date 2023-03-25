@@ -270,7 +270,7 @@ func (builder *jsonBuilder) setErrorFields(fields Fields, err error) {
 func (builder *jsonBuilder) setBytes() *jsonBuilder {
 	bytes, err := gbjson.Marshal(builder.data)
 	if err != nil {
-		err = gberr.Wrapf("Fail to JSON marshal data: `%#v`", []any{builder.data}, err)
+		err = gberr.Wrapf("Logger failed to JSON marshal data: `%#v`", []any{builder.data}, err)
 	} else {
 		bytes = append(bytes, '\n')
 	}
