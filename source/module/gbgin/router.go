@@ -19,8 +19,6 @@ type Router struct {
 	corsConfig *CORSConfig
 }
 
-type rebuildHandlers = func(handlers []Handler) []Handler
-
 func (router *Router) GetEngine() *Engine {
 	return router.engine
 }
@@ -29,11 +27,16 @@ func (router *Router) GetCORSConfig() *CORSConfig {
 	return router.corsConfig
 }
 
-func (router *Router) SetMiddlewares(rebuild rebuildHandlers) {
-	router.engine.Use(rebuild([]Handler{
-		gin.Recovery(),
-		cors.New(*router.corsConfig),
-	})...)
+func (router *Router) UseMiddlewares() {
+	router.SetMiddlewares(router.NewMiddlewares()...)
+}
+
+func (router *Router) SetMiddlewares(handlers ...Handler) {
+	router.engine.Use(handlers...)
+}
+
+func (router *Router) NewMiddlewares() []Handler {
+	return []Handler{gin.Recovery(), cors.New(*router.corsConfig)}
 }
 
 type routerBuilder struct {
