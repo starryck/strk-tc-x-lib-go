@@ -10,6 +10,7 @@ import (
 	"github.com/forbot161602/pbc-golang-lib/source/core/base/gbconst"
 	"github.com/forbot161602/pbc-golang-lib/source/core/base/gbmtmsg"
 	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbjson"
+	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbslice"
 	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gberr"
 	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gblog"
 )
@@ -228,4 +229,58 @@ func (flow *RESTFlow) SetHeader(key, value string) {
 func (flow *RESTFlow) RespondFile(path string) {
 	flow.context.File(path)
 	return
+}
+
+type KongFlow struct {
+	RESTFlow
+}
+
+func (flow *KongFlow) GetRequestID() string {
+	id := flow.GetHeader(gbconst.HeaderKongRequestID)
+	return id
+}
+
+func (flow *KongFlow) GetConsumerGroups() []string {
+	groups := strings.Split(flow.GetHeader(gbconst.HeaderKongConsumerGroups), ",")
+	return groups
+}
+
+func (flow *KongFlow) IsAnonymousRequest() bool {
+	groups := flow.GetConsumerGroups()
+	return gbslice.Contain(groups, gbconst.KongConsumerGroupAnonymous)
+}
+
+func (flow *KongFlow) IsOwnerRequest() bool {
+	groups := flow.GetConsumerGroups()
+	return gbslice.Contain(groups, gbconst.KongConsumerGroupOwner)
+}
+
+func (flow *KongFlow) IsClientRequest() bool {
+	groups := flow.GetConsumerGroups()
+	return gbslice.Contain(groups, gbconst.KongConsumerGroupClient)
+}
+
+func (flow *KongFlow) IsServiceRequest() bool {
+	groups := flow.GetConsumerGroups()
+	return gbslice.Contain(groups, gbconst.KongConsumerGroupService)
+}
+
+func (flow *KongFlow) IsMonitorRequest() bool {
+	groups := flow.GetConsumerGroups()
+	return gbslice.Contain(groups, gbconst.KongConsumerGroupMonitor)
+}
+
+func (flow *KongFlow) IsInternalRequest() bool {
+	isValid := flow.IsServiceRequest() || flow.IsMonitorRequest()
+	return isValid
+}
+
+func (flow *KongFlow) IsExternalRequest() bool {
+	isValid := flow.IsOwnerRequest() || flow.IsClientRequest()
+	return isValid
+}
+
+func (flow *KongFlow) IsAuthenticatedRequest() bool {
+	isValid := flow.IsInternalRequest() || flow.IsExternalRequest()
+	return isValid
 }

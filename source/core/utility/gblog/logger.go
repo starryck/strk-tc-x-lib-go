@@ -18,7 +18,7 @@ import (
 var mLogger *Logger
 
 var (
-	SkipKey  = ".skip"
+	SkipKey  = "#skip"
 	PanicKey = "panic"
 	ErrorKey = logrus.ErrorKey
 )
