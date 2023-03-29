@@ -58,7 +58,7 @@ func (flow *RESTFlow) GetContext() *Context {
 	return context
 }
 
-func (flow *RESTFlow) GetRequest() *Request {
+func (flow *RESTFlow) GetRequest() *http.Request {
 	request := flow.context.Request
 	return request
 }
@@ -228,6 +228,12 @@ func (flow *RESTFlow) SetHeader(key, value string) {
 
 func (flow *RESTFlow) RespondFile(path string) {
 	flow.context.File(path)
+	return
+}
+
+func (flow *RESTFlow) RespondJSON(message *MetaMessage, data any, options *JSONResponseOptions) {
+	response := NewJSONResponse(message, data, options)
+	flow.context.JSON(response.Code, response)
 	return
 }
 

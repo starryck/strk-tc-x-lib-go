@@ -1,8 +1,6 @@
 package gbgin
 
 import (
-	"net/http"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
@@ -18,7 +16,6 @@ type (
 	Engine         = gin.Engine
 	Handler        = gin.HandlerFunc
 	Context        = gin.Context
-	Request        = http.Request
 	ResponseWriter = gin.ResponseWriter
 )
 

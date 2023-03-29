@@ -77,10 +77,6 @@ func (metaMessage *MetaMessage) GetOutText(outArgs ...any) string {
 	return fmt.Sprintf(metaMessage.outText, outArgs...)
 }
 
-func (metaMessage *MetaMessage) GetOutStatus() bool {
-	return metaMessage.httpCode < http.StatusBadRequest
-}
-
 func (metaMessage *MetaMessage) String() string {
 	return fmt.Sprintf("<MetaMessage| code: `%s`, httpCode: `%d`>",
 		metaMessage.code, metaMessage.httpCode)
