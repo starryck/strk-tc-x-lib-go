@@ -36,7 +36,10 @@ func (router *Router) SetMiddlewares(handlers ...Handler) {
 }
 
 func (router *Router) NewMiddlewares() []Handler {
-	return []Handler{gin.Recovery(), cors.New(*router.corsConfig)}
+	return []Handler{
+		gin.Recovery(),
+		cors.New(*router.corsConfig),
+	}
 }
 
 type routerBuilder struct {
@@ -56,6 +59,7 @@ func (builder *routerBuilder) setEngine() *routerBuilder {
 	gin.SetMode(gin.ReleaseMode)
 	engine := gin.New()
 	engine.RedirectTrailingSlash = false
+	engine.NoRoute(NoRouteHandler)
 	builder.router.engine = engine
 	return builder
 }
