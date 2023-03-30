@@ -11,8 +11,8 @@ import (
 	"github.com/forbot161602/pbc-golang-lib/source/core/base/gbmtmsg"
 	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbjson"
 	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbslice"
-	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gberr"
-	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gblog"
+	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gberror"
+	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gblogger"
 )
 
 const (
@@ -49,7 +49,7 @@ func (flow *RESTFlow) SetError(err error) {
 }
 
 func (flow *RESTFlow) SetNotFoundError() {
-	flow.SetError(gberr.Validation(gbmtmsg.WMV400, nil))
+	flow.SetError(gberror.Validation(gbmtmsg.WMV400, nil))
 	return
 }
 
@@ -175,8 +175,8 @@ func (flow *RESTFlow) GetBody() io.ReadCloser {
 func (flow *RESTFlow) BindBody(value any) {
 	body := flow.GetBody()
 	if body == nil {
-		flow.SetError(gberr.Validation(gbmtmsg.WMV420, &gberr.Options{
-			LogFields: gblog.Fields{
+		flow.SetError(gberror.Validation(gbmtmsg.WMV420, &gberror.Options{
+			LogFields: gblogger.Fields{
 				LogKeyRequestBody: body,
 			},
 		}))
@@ -184,8 +184,8 @@ func (flow *RESTFlow) BindBody(value any) {
 	}
 	data, _ := io.ReadAll(body)
 	if err := gbjson.Unmarshal(data, value); err != nil {
-		flow.SetError(gberr.Validation(gbmtmsg.WMV421, &gberr.Options{
-			LogFields: gblog.Fields{
+		flow.SetError(gberror.Validation(gbmtmsg.WMV421, &gberror.Options{
+			LogFields: gblogger.Fields{
 				LogKeyRequestData: string(data),
 			},
 		}))

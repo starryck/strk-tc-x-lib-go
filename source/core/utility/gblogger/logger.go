@@ -1,4 +1,4 @@
-package gblog
+package gblogger
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	"github.com/forbot161602/pbc-golang-lib/source/core/base/gbcfg"
 	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbjson"
 	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbslice"
-	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gberr"
+	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gberror"
 )
 
 var mLogger *Logger
@@ -255,12 +255,12 @@ func (builder *jsonBuilder) setFields() *jsonBuilder {
 }
 
 func (builder *jsonBuilder) setErrorFields(fields Fields, err error) {
-	if uerrs := gberr.Unwrap(err); uerrs != nil {
+	if uerrs := gberror.Unwrap(err); uerrs != nil {
 		for _, uerr := range uerrs {
 			builder.setErrorFields(fields, uerr)
 		}
 	}
-	if cerr, ok := gberr.AsCustomError(err); ok {
+	if cerr, ok := gberror.AsCustomError(err); ok {
 		for key, value := range cerr.LogFields() {
 			fields[key] = value
 		}
@@ -270,7 +270,7 @@ func (builder *jsonBuilder) setErrorFields(fields Fields, err error) {
 func (builder *jsonBuilder) setBytes() *jsonBuilder {
 	bytes, err := gbjson.Marshal(builder.data)
 	if err != nil {
-		err = gberr.Wrapf("Logger failed to JSON marshal data: `%#v`", []any{builder.data}, err)
+		err = gberror.Wrapf("Logger failed to JSON marshal data: `%#v`", []any{builder.data}, err)
 	} else {
 		bytes = append(bytes, '\n')
 	}

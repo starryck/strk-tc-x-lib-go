@@ -1,19 +1,19 @@
 package gbslice
 
 import (
-	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbptr"
+	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbvalue"
 )
 
 func First[T any](elems []T) T {
 	if len(elems) == 0 {
-		return gbptr.Zero[T]()
+		return gbvalue.Zero[T]()
 	}
 	return elems[0]
 }
 
 func Last[T any](elems []T) T {
 	if len(elems) == 0 {
-		return gbptr.Zero[T]()
+		return gbvalue.Zero[T]()
 	}
 	return elems[len(elems)-1]
 }

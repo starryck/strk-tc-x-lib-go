@@ -1,4 +1,4 @@
-package gberr
+package gberror
 
 import (
 	"errors"

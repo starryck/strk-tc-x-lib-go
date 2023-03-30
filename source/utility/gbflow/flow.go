@@ -10,7 +10,7 @@ import (
 	"github.com/forbot161602/pbc-golang-lib/source/core/base/gbconst"
 	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbjson"
 	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbrand"
-	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gblog"
+	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gblogger"
 )
 
 type Flow interface {
@@ -90,8 +90,8 @@ func (flow *BaseFlow) SetStorage(storage *sync.Map) {
 	return
 }
 
-func (flow *BaseFlow) GetLogger() *gblog.Entry {
-	entry := gblog.WithFields(gblog.Fields{
+func (flow *BaseFlow) GetLogger() *gblogger.Entry {
+	entry := gblogger.WithFields(gblogger.Fields{
 		"flowID":     flow.GetID(),
 		"flowTrails": fmt.Sprintf("/%s", strings.Join(flow.GetTrails(), "/")),
 	})
@@ -320,7 +320,7 @@ func (flow *BaseFlow) Async(operate Operate, args ...any) {
 	go func() {
 		defer func() {
 			if v := recover(); v != nil {
-				flow.GetLogger().WithField(gblog.PanicKey, gblog.FormatPanic(v, debug.Stack())).Error("Flow async operation panicked.")
+				flow.GetLogger().WithField(gblogger.PanicKey, gblogger.FormatPanic(v, debug.Stack())).Error("Flow async operation panicked.")
 			}
 		}()
 		if err := operate(args...); err != nil {

@@ -1,4 +1,4 @@
-package gbptr
+package gbvalue
 
 func Zero[T any]() T {
 	var value T

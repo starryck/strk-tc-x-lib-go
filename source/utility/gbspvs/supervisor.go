@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gblog"
+	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gblogger"
 )
 
 var mSupervisor *Supervisor
@@ -130,12 +130,12 @@ func (supervisor *Supervisor) serveDaemons() {
 
 func (supervisor *Supervisor) emitBeatInfo() {
 	fields := supervisor.makeLoggerFields()
-	gblog.WithFields(fields).Info("Supervisor heartbeats.")
+	gblogger.WithFields(fields).Info("Supervisor heartbeats.")
 }
 
 func (supervisor *Supervisor) emitShutInfo() {
 	fields := supervisor.makeLoggerFields()
-	gblog.WithFields(fields).Infof("Supervisor will gracefully shut down in %v.", supervisor.gracefulTimeout)
+	gblogger.WithFields(fields).Infof("Supervisor will gracefully shut down in %v.", supervisor.gracefulTimeout)
 }
 
 func (supervisor *Supervisor) waitDaemons() {
@@ -162,13 +162,13 @@ func (supervisor *Supervisor) emitExitInfo() {
 	fields := supervisor.makeLoggerFields()
 	switch supervisor.exitCode {
 	case exitCodeSuccess:
-		gblog.WithFields(fields).Info("Supervisor gracefully shut down normally.")
+		gblogger.WithFields(fields).Info("Supervisor gracefully shut down normally.")
 	case exitCodeFailure:
-		gblog.WithFields(fields).Warn("Supervisor gracefully shut down abnormally.")
+		gblogger.WithFields(fields).Warn("Supervisor gracefully shut down abnormally.")
 	}
 }
 
-func (supervisor *Supervisor) makeLoggerFields() gblog.Fields {
+func (supervisor *Supervisor) makeLoggerFields() gblogger.Fields {
 	actives := []string{}
 	inactives := []string{}
 	for _, daemon := range supervisor.daemons {
@@ -178,7 +178,7 @@ func (supervisor *Supervisor) makeLoggerFields() gblog.Fields {
 			inactives = append(inactives, daemon.String())
 		}
 	}
-	return gblog.Fields{
+	return gblogger.Fields{
 		"actives":   actives,
 		"inactives": inactives,
 	}
@@ -197,11 +197,11 @@ func (daemon *Daemon) setup() {
 }
 
 func (daemon *Daemon) start(ctx context.Context) {
-	fields := gblog.Fields{"daemon": daemon.String()}
+	fields := gblogger.Fields{"daemon": daemon.String()}
 	if err := daemon.process.Start(ctx); err == nil {
-		gblog.WithFields(fields).Info("Daemon succeeded in exiting process.")
+		gblogger.WithFields(fields).Info("Daemon succeeded in exiting process.")
 	} else {
-		gblog.WithFields(fields).WithError(err).Error("Daemon failed to exit process.")
+		gblogger.WithFields(fields).WithError(err).Error("Daemon failed to exit process.")
 	}
 }
 
