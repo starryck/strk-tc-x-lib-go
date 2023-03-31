@@ -149,10 +149,10 @@ func (supervisor *Supervisor) waitDaemons() {
 		case <-timer.C:
 			supervisor.emitBeatInfo()
 		case <-timeout:
-			supervisor.exitCode = exitCodeFailure
+			supervisor.exitCode = ExitCodeFailure
 			return
 		case <-supervisor.waitChannel:
-			supervisor.exitCode = exitCodeSuccess
+			supervisor.exitCode = ExitCodeSuccess
 			return
 		}
 	}
@@ -161,9 +161,9 @@ func (supervisor *Supervisor) waitDaemons() {
 func (supervisor *Supervisor) emitExitInfo() {
 	fields := supervisor.makeLoggerFields()
 	switch supervisor.exitCode {
-	case exitCodeSuccess:
+	case ExitCodeSuccess:
 		gblogger.WithFields(fields).Info("Supervisor gracefully shut down normally.")
-	case exitCodeFailure:
+	case ExitCodeFailure:
 		gblogger.WithFields(fields).Warn("Supervisor gracefully shut down abnormally.")
 	}
 }
@@ -214,14 +214,14 @@ func (daemon *Daemon) String() string {
 }
 
 const (
-	exitCodeDefault = -1 + iota
-	exitCodeSuccess
-	exitCodeFailure
+	ExitCodeDefault = -1 + iota
+	ExitCodeSuccess
+	ExitCodeFailure
 )
 
 const (
-	defaultGracefulTimeout   = 30 * time.Second
-	defaultHeartbeatInterval = 5 * time.Minute
+	DefaultGracefulTimeout   = 30 * time.Second
+	DefaultHeartbeatInterval = 5 * time.Minute
 )
 
 type builder struct {
@@ -247,7 +247,7 @@ func (builder *builder) initialize() *builder {
 }
 
 func (builder *builder) setExitCode() *builder {
-	builder.supervisor.exitCode = exitCodeDefault
+	builder.supervisor.exitCode = ExitCodeDefault
 	return builder
 }
 
@@ -276,7 +276,7 @@ func (builder *builder) setGracefulTimeout() *builder {
 	if gracefulTimeout != nil {
 		builder.supervisor.gracefulTimeout = *gracefulTimeout
 	} else {
-		builder.supervisor.gracefulTimeout = defaultGracefulTimeout
+		builder.supervisor.gracefulTimeout = DefaultGracefulTimeout
 	}
 	return builder
 }
@@ -286,7 +286,7 @@ func (builder *builder) setHeartbeatInterval() *builder {
 	if heartbeatInterval != nil {
 		builder.supervisor.heartbeatInterval = *heartbeatInterval
 	} else {
-		builder.supervisor.heartbeatInterval = defaultHeartbeatInterval
+		builder.supervisor.heartbeatInterval = DefaultHeartbeatInterval
 	}
 	return builder
 }

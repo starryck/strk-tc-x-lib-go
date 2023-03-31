@@ -189,8 +189,8 @@ func (jsonifier *jsonifier) Format(entry *Entry) ([]byte, error) {
 }
 
 const (
-	minCallerFrameSkip = 7
-	maxCallerFrameSize = 1 << 5
+	MinCallerFrameSkip = 7
+	MaxCallerFrameSize = 1 << 5
 )
 
 type jsonBuilder struct {
@@ -226,7 +226,7 @@ func (builder *jsonBuilder) setMessage() *jsonBuilder {
 }
 
 func (builder *jsonBuilder) setCaller() *jsonBuilder {
-	skip := minCallerFrameSkip
+	skip := MinCallerFrameSkip
 	if value, ok := builder.entry.Data[SkipKey]; ok {
 		if offset, ok := value.(int); ok {
 			skip += offset
@@ -304,7 +304,7 @@ func newCallerTracer() *callerTracer {
 }
 
 func (tracer *callerTracer) source(skip int) *runtime.Frame {
-	pcs := make([]uintptr, maxCallerFrameSize)
+	pcs := make([]uintptr, MaxCallerFrameSize)
 	if count := runtime.Callers(skip, pcs); count == 0 {
 		return nil
 	}
@@ -351,7 +351,7 @@ func (builder *callerTracerBuilder) setLogrusPath() *callerTracerBuilder {
 }
 
 func (builder *callerTracerBuilder) setSkipFileSet() *callerTracerBuilder {
-	fileSet := make(map[string]bool, maxCallerFrameSize)
+	fileSet := make(map[string]bool, MaxCallerFrameSize)
 	fileSet[builder.callerTracer.loggerFile] = true
 	builder.callerTracer.skipFileSet = fileSet
 	return builder
