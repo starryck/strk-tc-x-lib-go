@@ -114,7 +114,9 @@ type CustomError interface {
 	Message() *Message
 	Options() *Options
 	OutText() string
+	OutArgs() []any
 	LogText() string
+	LogArgs() []any
 	LogFields() LogFields
 }
 
@@ -172,8 +174,16 @@ func (err *InternalError) OutText() string {
 	return err.message.GetOutText(err.outArgs...)
 }
 
+func (err *InternalError) OutArgs() []any {
+	return err.outArgs
+}
+
 func (err *InternalError) LogText() string {
 	return err.message.GetLogText(err.logArgs...)
+}
+
+func (err *InternalError) LogArgs() []any {
+	return err.logArgs
 }
 
 func (err *InternalError) LogFields() LogFields {

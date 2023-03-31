@@ -39,6 +39,9 @@ func (router *Router) NewMiddlewares() []Handler {
 	return []Handler{
 		gin.Recovery(),
 		cors.New(*router.corsConfig),
+		GraceMiddleware,
+		RecordMiddleware,
+		ResponseMiddleware,
 	}
 }
 

@@ -15,11 +15,6 @@ import (
 	"github.com/forbot161602/pbc-golang-lib/source/core/utility/gblogger"
 )
 
-const (
-	LogKeyRequestBody = "requestBody"
-	LogKeyRequestData = "requestData"
-)
-
 type RESTFlow struct {
 	BaseFlow
 	context *Context
@@ -177,7 +172,7 @@ func (flow *RESTFlow) BindBody(value any) {
 	if body == nil {
 		flow.SetError(gberror.Validation(gbmtmsg.WMV420, &gberror.Options{
 			LogFields: gblogger.Fields{
-				LogKeyRequestBody: body,
+				"requestBody": body,
 			},
 		}))
 		return
@@ -186,7 +181,7 @@ func (flow *RESTFlow) BindBody(value any) {
 	if err := gbjson.Unmarshal(data, value); err != nil {
 		flow.SetError(gberror.Validation(gbmtmsg.WMV421, &gberror.Options{
 			LogFields: gblogger.Fields{
-				LogKeyRequestData: string(data),
+				"requestData": string(data),
 			},
 		}))
 		return
