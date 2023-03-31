@@ -44,7 +44,7 @@ func (flow *RESTFlow) SetError(err error) {
 }
 
 func (flow *RESTFlow) SetNotFoundError() {
-	flow.SetError(gberror.Validation(gbmtmsg.WMV400, nil))
+	flow.SetError(gberror.Validation(gbmtmsg.WMV404, nil))
 	return
 }
 

@@ -58,21 +58,21 @@ func MakeServiceDeveloping(srvEnv string) bool {
 }
 
 type Config struct {
-	BasePath  string
-	GitTag    string `env:"GIT_TAG,notEmpty"`
-	GitCommit string `env:"GIT_COMMIT,notEmpty"`
+	BasePath  string `json:"basePath"`
+	GitTag    string `json:"gitTag" env:"GIT_TAG,notEmpty"`
+	GitCommit string `json:"gitCommit" env:"GIT_COMMIT,notEmpty"`
 
-	ServiceID          string
-	ServiceCode        string `env:"SRV_CODE" envDefault:"S001"`
-	ServiceName        string `env:"SRV_NAME" envDefault:"golang-lib"`
-	ServicePort        int    `env:"SRV_PORT" envDefault:"80"`
-	ServiceProject     string `env:"SRV_PROJECT" envDefault:"open"`
-	ServiceVersion     string `env:"SRV_VERSION" envDefault:"v1"`
-	ServiceEnvironment string `env:"SRV_ENVIRONMENT,notEmpty"`
-	ServiceLogLevel    string `env:"SRV_LOG_LEVEL" envDefault:"INFO"`
-	ServiceTesting     bool   `env:"SRV_TESTING" envDefault:"false"`
-	ServiceDebugging   bool   `env:"SRV_DEBUGGING" envDefault:"false"`
-	ServiceDeveloping  bool
+	ServiceID          string `json:"serviceID"`
+	ServiceCode        string `json:"serviceCode" env:"SRV_CODE" envDefault:"S001"`
+	ServiceName        string `json:"serviceName" env:"SRV_NAME" envDefault:"golang-lib"`
+	ServicePort        int    `json:"servicePort" env:"SRV_PORT" envDefault:"80"`
+	ServiceProject     string `json:"serviceProject" env:"SRV_PROJECT" envDefault:"open"`
+	ServiceVersion     string `json:"serviceVersion" env:"SRV_VERSION" envDefault:"v1"`
+	ServiceEnvironment string `json:"serviceEnvironment" env:"SRV_ENVIRONMENT,notEmpty"`
+	ServiceLogLevel    string `json:"serviceLogLevel" env:"SRV_LOG_LEVEL" envDefault:"INFO"`
+	ServiceTesting     bool   `json:"serviceTesting" env:"SRV_TESTING" envDefault:"false"`
+	ServiceDebugging   bool   `json:"serviceDebugging" env:"SRV_DEBUGGING" envDefault:"false"`
+	ServiceDeveloping  bool   `json:"serviceDeveloping"`
 }
 
 // Base definition
