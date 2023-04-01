@@ -19,6 +19,19 @@ type Router struct {
 	corsConfig *CORSConfig
 }
 
+type RouterStem struct {
+	Path     string
+	Handlers []Handler
+	Leaves   []RouterLeaf
+	Stems    []RouterStem
+}
+
+type RouterLeaf struct {
+	Method   string
+	Path     string
+	Handlers []Handler
+}
+
 func (router *Router) GetEngine() *Engine {
 	return router.engine
 }
@@ -42,6 +55,20 @@ func (router *Router) NewMiddlewares() []Handler {
 		GraceMiddleware,
 		RecordMiddleware,
 		ResponseMiddleware,
+	}
+}
+
+func (router *Router) SetRouterGroup(stems ...RouterStem) {
+	router.setRouterGroup(&router.engine.RouterGroup, stems...)
+}
+
+func (router *Router) setRouterGroup(group *RouterGroup, stems ...RouterStem) {
+	for _, stem := range stems {
+		subgroup := group.Group(stem.Path, stem.Handlers...)
+		for _, leaf := range stem.Leaves {
+			subgroup.Handle(leaf.Method, leaf.Path, leaf.Handlers...)
+		}
+		router.setRouterGroup(subgroup, stem.Stems...)
 	}
 }
 

@@ -14,6 +14,7 @@ type (
 
 type (
 	Engine         = gin.Engine
+	RouterGroup    = gin.RouterGroup
 	Handler        = gin.HandlerFunc
 	Context        = gin.Context
 	ResponseWriter = gin.ResponseWriter
