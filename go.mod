@@ -8,6 +8,7 @@ require (
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.9.0
 	github.com/gofrs/uuid/v5 v5.0.0
+	github.com/hashicorp/golang-lru/v2 v2.0.2
 	github.com/joho/godotenv v1.5.1
 	github.com/rs/xid v1.4.0
 	github.com/segmentio/ksuid v1.0.4
