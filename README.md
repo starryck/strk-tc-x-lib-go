@@ -1,5 +1,5 @@
-# pbc-golang-lib
-![go 1.20.2](https://img.shields.io/badge/go-1.20.2-39acd7)
+# x-lib-go
+![go 1.21.6](https://img.shields.io/badge/go-1.21.6-39acd7)
 ![gin 1.9.0](https://img.shields.io/badge/gin-1.9.0-39acd7)
 ![version 0.1.0](https://img.shields.io/badge/version-0.1.0-yellow.svg)
 

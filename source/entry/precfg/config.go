@@ -7,9 +7,9 @@ import (
 
 	"github.com/caarlos0/env/v7"
 
-	"github.com/forbot161602/pbc-golang-lib/source/core/base/gbcfg"
-	"github.com/forbot161602/pbc-golang-lib/source/core/base/gbconst"
-	"github.com/forbot161602/pbc-golang-lib/source/core/toolkit/gbrand"
+	"github.com/forbot161602/x-lib-go/source/core/base/xbcfg"
+	"github.com/forbot161602/x-lib-go/source/core/base/xbconst"
+	"github.com/forbot161602/x-lib-go/source/core/toolkit/xbrand"
 )
 
 func NewConfig() *Config {
@@ -23,15 +23,15 @@ func NewConfig() *Config {
 }
 
 var ServiceEnvironmentDevelopingMap = map[string]bool{
-	gbconst.EnvironmentLocal: true,
-	gbconst.EnvironmentDev:   true,
-	gbconst.EnvironmentSIT:   true,
-	gbconst.EnvironmentUAT:   false,
-	gbconst.EnvironmentStage: false,
-	gbconst.EnvironmentProd:  false,
+	xbconst.EnvironmentLocal: true,
+	xbconst.EnvironmentDev:   true,
+	xbconst.EnvironmentSIT:   true,
+	xbconst.EnvironmentUAT:   false,
+	xbconst.EnvironmentStage: false,
+	xbconst.EnvironmentProd:  false,
 }
 
-func ParseEnv(config gbcfg.SpecConfig) {
+func ParseEnv(config xbcfg.SpecConfig) {
 	if err := env.Parse(config); err != nil {
 		panic(err)
 	}
@@ -46,7 +46,7 @@ func MakeBasePath(back int) string {
 }
 
 func MakeServiceID() string {
-	return gbrand.MakeUUID4()
+	return xbrand.MakeUUID4()
 }
 
 func MakeServiceDeveloping(srvEnv string) bool {

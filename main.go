@@ -5,9 +5,9 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	_ "github.com/forbot161602/pbc-golang-lib/source/entry/preset"
-	"github.com/forbot161602/pbc-golang-lib/source/entry/run_script"
-	"github.com/forbot161602/pbc-golang-lib/source/entry/show_info"
+	_ "github.com/forbot161602/x-lib-go/source/entry/preset"
+	"github.com/forbot161602/x-lib-go/source/entry/run_script"
+	"github.com/forbot161602/x-lib-go/source/entry/show_info"
 )
 
 var (
