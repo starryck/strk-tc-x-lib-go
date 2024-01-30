@@ -1,8 +1,6 @@
 package xbgin
 
 import (
-	"net/http"
-
 	"github.com/forbot161602/x-lib-go/source/core/base/xbmodel"
 	"github.com/forbot161602/x-lib-go/source/core/base/xbmtmsg"
 )
@@ -85,7 +83,6 @@ func (builder *jsonResponseBuilder) makeMeta() *JSONResponseMeta {
 	meta := &JSONResponseMeta{
 		JSONResponseBaseData: JSONResponseBaseData{
 			Code:    builder.makeMetaCode(),
-			Status:  builder.makeMetaStatus(),
 			Message: builder.makeMetaMessage(),
 		},
 	}
@@ -97,7 +94,6 @@ func (builder *jsonResponseBuilder) makePageMeta() *JSONResponsePageMeta {
 	meta := &JSONResponsePageMeta{
 		JSONResponseBaseData: JSONResponseBaseData{
 			Code:    builder.makeMetaCode(),
-			Status:  builder.makeMetaStatus(),
 			Message: builder.makeMetaMessage(),
 		},
 		JSONResponsePageData: JSONResponsePageData{
@@ -113,11 +109,6 @@ func (builder *jsonResponseBuilder) makePageMeta() *JSONResponsePageMeta {
 func (builder *jsonResponseBuilder) makeMetaCode() string {
 	code := builder.message.GetOutCode()
 	return code
-}
-
-func (builder *jsonResponseBuilder) makeMetaStatus() bool {
-	status := builder.response.Code < http.StatusBadRequest
-	return status
 }
 
 func (builder *jsonResponseBuilder) makeMetaMessage() string {

@@ -14,23 +14,23 @@ var sequenceKindSet = map[reflect.Kind]bool{
 	reflect.Slice: true,
 }
 
-func MakeCacheKey(prefix string, keysep string, parts ...any) string {
+func MakeCacheKey(prefix string, keysep string, keyfrags ...any) string {
 	keyParts := &bytes.Buffer{}
 	keyParts.WriteString(makePrefixKeyPart(prefix, keysep))
-	for _, part := range parts {
-		if isPartSequenceKind(part) {
-			keyParts.WriteString(makeSequenceKeyPart(part, keysep))
+	for _, keyfrag := range keyfrags {
+		if isSequenceKind(keyfrag) {
+			keyParts.WriteString(makeSequenceKeyPart(keyfrag, keysep))
 		} else {
-			keyParts.WriteString(makeNonsequenceKeyPart(part, keysep))
+			keyParts.WriteString(makeNonsequenceKeyPart(keyfrag, keysep))
 		}
 	}
 	return keyParts.String()
 }
 
-func isPartSequenceKind(part any) bool {
+func isSequenceKind(value any) bool {
 	var ok bool
-	if partType := reflect.TypeOf(part); partType != nil {
-		_, ok = sequenceKindSet[partType.Kind()]
+	if valueType := reflect.TypeOf(value); valueType != nil {
+		_, ok = sequenceKindSet[valueType.Kind()]
 	}
 	return ok
 }
@@ -42,8 +42,8 @@ func makePrefixKeyPart(prefix string, keysep string) string {
 	return fmt.Sprintf("%s%s", keysep, prefix)
 }
 
-func makeSequenceKeyPart(part any, keysep string) string {
-	sequence := reflect.ValueOf(part)
+func makeSequenceKeyPart(keyfrag any, keysep string) string {
+	sequence := reflect.ValueOf(keyfrag)
 	elements := []string{}
 	elementSet := map[string]bool{}
 	for i := 0; i < sequence.Len(); i++ {
@@ -58,8 +58,8 @@ func makeSequenceKeyPart(part any, keysep string) string {
 	return fmt.Sprintf("%s%v", keysep, elements)
 }
 
-func makeNonsequenceKeyPart(part any, keysep string) string {
-	return fmt.Sprintf("%s%v", keysep, part)
+func makeNonsequenceKeyPart(keyfrag any, keysep string) string {
+	return fmt.Sprintf("%s%v", keysep, keyfrag)
 }
 
 const (
@@ -86,32 +86,32 @@ type ARCCache[T any] struct {
 	proxy  *lru.ARCCache[string, T]
 }
 
-func (cache *ARCCache[T]) Has(parts []any) bool {
-	cacheKey := MakeCacheKey(cache.prefix, cache.keysep, parts...)
+func (cache *ARCCache[T]) Has(keyfrags []any) bool {
+	cacheKey := MakeCacheKey(cache.prefix, cache.keysep, keyfrags...)
 	ok := cache.proxy.Contains(cacheKey)
 	return ok
 }
 
-func (cache *ARCCache[T]) Get(parts []any) (T, bool) {
-	cacheKey := MakeCacheKey(cache.prefix, cache.keysep, parts...)
+func (cache *ARCCache[T]) Get(keyfrags []any) (T, bool) {
+	cacheKey := MakeCacheKey(cache.prefix, cache.keysep, keyfrags...)
 	cacheVal, ok := cache.proxy.Get(cacheKey)
 	return cacheVal, ok
 }
 
-func (cache *ARCCache[T]) Set(parts []any, value T) {
-	cacheKey := MakeCacheKey(cache.prefix, cache.keysep, parts...)
+func (cache *ARCCache[T]) Set(keyfrags []any, value T) {
+	cacheKey := MakeCacheKey(cache.prefix, cache.keysep, keyfrags...)
 	cache.proxy.Add(cacheKey, value)
 	return
 }
 
-func (cache *ARCCache[T]) Peek(parts []any) (T, bool) {
-	cacheKey := MakeCacheKey(cache.prefix, cache.keysep, parts...)
+func (cache *ARCCache[T]) Peek(keyfrags []any) (T, bool) {
+	cacheKey := MakeCacheKey(cache.prefix, cache.keysep, keyfrags...)
 	cacheVal, ok := cache.proxy.Peek(cacheKey)
 	return cacheVal, ok
 }
 
-func (cache *ARCCache[T]) Delete(parts []any) {
-	cacheKey := MakeCacheKey(cache.prefix, cache.keysep, parts...)
+func (cache *ARCCache[T]) Delete(keyfrags []any) {
+	cacheKey := MakeCacheKey(cache.prefix, cache.keysep, keyfrags...)
 	cache.proxy.Remove(cacheKey)
 	return
 }

@@ -1,4 +1,4 @@
-package run_script
+package xbscript
 
 func Execute() error {
 	return nil

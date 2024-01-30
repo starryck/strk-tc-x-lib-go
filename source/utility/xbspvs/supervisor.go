@@ -16,15 +16,15 @@ import (
 
 var mSupervisor *Supervisor
 
-func GetSupervisor(options *Options) *Supervisor {
+func GetSupervisor(options *SupervisorOptions) *Supervisor {
 	if mSupervisor == nil {
 		mSupervisor = newSupervisor(options)
 	}
 	return mSupervisor
 }
 
-func newSupervisor(options *Options) *Supervisor {
-	supervisor := (&builder{options: options}).
+func newSupervisor(options *SupervisorOptions) *Supervisor {
+	supervisor := (&supervisorBuilder{options: options}).
 		initialize().
 		setExitCode().
 		setWaitGroup().
@@ -58,12 +58,13 @@ func WithWaitGroup(operate Operate, args ...any) {
 	return
 }
 
-type Operate func(args ...any)
+const (
+	ExitCodeDefault = -1 + iota
+	ExitCodeSuccess
+	ExitCodeFailure
+)
 
-type Process interface {
-	Setup() error
-	Start(ctx context.Context) error
-}
+type Operate func(args ...any)
 
 type Supervisor struct {
 	daemons       []*Daemon
@@ -111,11 +112,11 @@ func (supervisor *Supervisor) startDaemons() {
 }
 
 func (supervisor *Supervisor) serveDaemons() {
-	timer := time.NewTicker(supervisor.heartbeatInterval)
-	defer timer.Stop()
+	ticker := time.NewTicker(supervisor.heartbeatInterval)
+	defer ticker.Stop()
 	for {
 		select {
-		case <-timer.C:
+		case <-ticker.C:
 			supervisor.emitBeatInfo()
 		case <-supervisor.signalChannel:
 			supervisor.rootCanceller()
@@ -139,16 +140,16 @@ func (supervisor *Supervisor) emitShutInfo() {
 }
 
 func (supervisor *Supervisor) waitDaemons() {
-	timer, timeout := time.NewTicker(1*time.Second), time.After(supervisor.gracefulTimeout)
+	ticker, timer := time.NewTicker(1*time.Second), time.After(supervisor.gracefulTimeout)
 	go func() {
 		supervisor.waitGroup.Wait()
 		supervisor.waitChannel <- struct{}{}
 	}()
 	for {
 		select {
-		case <-timer.C:
+		case <-ticker.C:
 			supervisor.emitBeatInfo()
-		case <-timeout:
+		case <-timer:
 			supervisor.exitCode = ExitCodeFailure
 			return
 		case <-supervisor.waitChannel:
@@ -184,6 +185,78 @@ func (supervisor *Supervisor) makeLoggerFields() xblogger.Fields {
 	}
 }
 
+const (
+	DefaultGracefulTimeout   = 30 * time.Second
+	DefaultHeartbeatInterval = 5 * time.Minute
+)
+
+type supervisorBuilder struct {
+	supervisor *Supervisor
+	options    *SupervisorOptions
+}
+
+type SupervisorOptions struct {
+	GracefulTimeout   *time.Duration
+	HeartbeatInterval *time.Duration
+}
+
+func (builder *supervisorBuilder) build() *Supervisor {
+	return builder.supervisor
+}
+
+func (builder *supervisorBuilder) initialize() *supervisorBuilder {
+	builder.supervisor = &Supervisor{}
+	if builder.options == nil {
+		builder.options = &SupervisorOptions{}
+	}
+	return builder
+}
+
+func (builder *supervisorBuilder) setExitCode() *supervisorBuilder {
+	builder.supervisor.exitCode = ExitCodeDefault
+	return builder
+}
+
+func (builder *supervisorBuilder) setWaitGroup() *supervisorBuilder {
+	builder.supervisor.waitGroup = &sync.WaitGroup{}
+	builder.supervisor.waitChannel = make(chan struct{}, 1)
+	return builder
+}
+
+func (builder *supervisorBuilder) setRootContext() *supervisorBuilder {
+	ctx, cancel := context.WithCancel(context.Background())
+	builder.supervisor.rootContext = ctx
+	builder.supervisor.rootCanceller = cancel
+	return builder
+}
+
+func (builder *supervisorBuilder) setSignalChannel() *supervisorBuilder {
+	sigchn := make(chan os.Signal, 1)
+	signal.Notify(sigchn, syscall.SIGINT, syscall.SIGTERM)
+	builder.supervisor.signalChannel = sigchn
+	return builder
+}
+
+func (builder *supervisorBuilder) setGracefulTimeout() *supervisorBuilder {
+	gracefulTimeout := builder.options.GracefulTimeout
+	if gracefulTimeout != nil {
+		builder.supervisor.gracefulTimeout = *gracefulTimeout
+	} else {
+		builder.supervisor.gracefulTimeout = DefaultGracefulTimeout
+	}
+	return builder
+}
+
+func (builder *supervisorBuilder) setHeartbeatInterval() *supervisorBuilder {
+	heartbeatInterval := builder.options.HeartbeatInterval
+	if heartbeatInterval != nil {
+		builder.supervisor.heartbeatInterval = *heartbeatInterval
+	} else {
+		builder.supervisor.heartbeatInterval = DefaultHeartbeatInterval
+	}
+	return builder
+}
+
 type Daemon struct {
 	process  Process
 	typeName string
@@ -213,82 +286,9 @@ func (daemon *Daemon) String() string {
 	return fmt.Sprintf("<Daemon| typeName: `%s`, isActive: `%v`>", daemon.typeName, daemon.isActive)
 }
 
-const (
-	ExitCodeDefault = -1 + iota
-	ExitCodeSuccess
-	ExitCodeFailure
-)
-
-const (
-	DefaultGracefulTimeout   = 30 * time.Second
-	DefaultHeartbeatInterval = 5 * time.Minute
-)
-
-type builder struct {
-	supervisor *Supervisor
-	options    *Options
-}
-
-type Options struct {
-	GracefulTimeout   *time.Duration
-	HeartbeatInterval *time.Duration
-}
-
-func (builder *builder) build() *Supervisor {
-	return builder.supervisor
-}
-
-func (builder *builder) initialize() *builder {
-	builder.supervisor = &Supervisor{}
-	if builder.options == nil {
-		builder.options = &Options{}
-	}
-	return builder
-}
-
-func (builder *builder) setExitCode() *builder {
-	builder.supervisor.exitCode = ExitCodeDefault
-	return builder
-}
-
-func (builder *builder) setWaitGroup() *builder {
-	builder.supervisor.waitGroup = &sync.WaitGroup{}
-	builder.supervisor.waitChannel = make(chan struct{}, 1)
-	return builder
-}
-
-func (builder *builder) setRootContext() *builder {
-	ctx, cancel := context.WithCancel(context.Background())
-	builder.supervisor.rootContext = ctx
-	builder.supervisor.rootCanceller = cancel
-	return builder
-}
-
-func (builder *builder) setSignalChannel() *builder {
-	sigchn := make(chan os.Signal, 1)
-	signal.Notify(sigchn, syscall.SIGINT, syscall.SIGTERM)
-	builder.supervisor.signalChannel = sigchn
-	return builder
-}
-
-func (builder *builder) setGracefulTimeout() *builder {
-	gracefulTimeout := builder.options.GracefulTimeout
-	if gracefulTimeout != nil {
-		builder.supervisor.gracefulTimeout = *gracefulTimeout
-	} else {
-		builder.supervisor.gracefulTimeout = DefaultGracefulTimeout
-	}
-	return builder
-}
-
-func (builder *builder) setHeartbeatInterval() *builder {
-	heartbeatInterval := builder.options.HeartbeatInterval
-	if heartbeatInterval != nil {
-		builder.supervisor.heartbeatInterval = *heartbeatInterval
-	} else {
-		builder.supervisor.heartbeatInterval = DefaultHeartbeatInterval
-	}
-	return builder
+type Process interface {
+	Setup() error
+	Start(ctx context.Context) error
 }
 
 type ServerProcess struct {

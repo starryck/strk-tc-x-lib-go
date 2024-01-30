@@ -1,4 +1,4 @@
-package show_info
+package xbinfo
 
 import (
 	"github.com/forbot161602/x-lib-go/source/core/base/xbcfg"

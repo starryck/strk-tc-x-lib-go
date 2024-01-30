@@ -2,54 +2,54 @@ package xbwatch
 
 import "time"
 
-func NewTimer() *Timer {
-	timer := &Timer{}
-	timer.Reset()
-	return timer
+func NewWatch() *Watch {
+	watch := &Watch{}
+	watch.Reset()
+	return watch
 }
 
-type Timer struct {
+type Watch struct {
 	initialTime time.Time
 	stampedTime time.Time
 }
 
-func (timer *Timer) Reset() *Timer {
-	timer.initialTime = time.Now()
-	timer.stampedTime = timer.initialTime
-	return timer
+func (watch *Watch) Reset() *Watch {
+	watch.initialTime = time.Now()
+	watch.stampedTime = watch.initialTime
+	return watch
 }
 
-func (timer *Timer) Stamp() *Timer {
-	timer.stampedTime = time.Now()
-	return timer
+func (watch *Watch) Stamp() *Watch {
+	watch.stampedTime = time.Now()
+	return watch
 }
 
-func (timer *Timer) InitialTime() time.Time {
-	return timer.initialTime
+func (watch *Watch) InitialTime() time.Time {
+	return watch.initialTime
 }
 
-func (timer *Timer) StampedTime() time.Time {
-	return timer.stampedTime
+func (watch *Watch) StampedTime() time.Time {
+	return watch.stampedTime
 }
 
-func (timer *Timer) ElapsedTime() time.Duration {
-	return timer.stampedTime.Sub(timer.initialTime)
+func (watch *Watch) ElapsedTime() time.Duration {
+	return watch.stampedTime.Sub(watch.initialTime)
 }
 
-func (timer *Timer) ElapsedTimeS() int64 {
-	return int64(timer.ElapsedTime().Seconds())
+func (watch *Watch) ElapsedTimeS() int64 {
+	return int64(watch.ElapsedTime().Seconds())
 }
 
-func (timer *Timer) ElapsedTimeMs() int64 {
-	return timer.ElapsedTime().Milliseconds()
+func (watch *Watch) ElapsedTimeMs() int64 {
+	return watch.ElapsedTime().Milliseconds()
 }
 
-func (timer *Timer) ElapsedTimeNs() int64 {
-	return timer.ElapsedTime().Nanoseconds()
+func (watch *Watch) ElapsedTimeNs() int64 {
+	return watch.ElapsedTime().Nanoseconds()
 }
 
-func (timer *Timer) HasElapsedTime(value time.Duration) bool {
-	return timer.ElapsedTime() >= value
+func (watch *Watch) HasElapsedTime(value time.Duration) bool {
+	return watch.ElapsedTime() >= value
 }
 
 func NewCounter(initial, interval int) *Counter {

@@ -38,7 +38,7 @@ func GetLogger() *Logger {
 }
 
 func newLogger() *Logger {
-	logger := (&builder{}).
+	logger := (&loggerBuilder{}).
 		initialize().
 		setSeverity().
 		setFormatter().
@@ -146,20 +146,20 @@ func FormatPanic(value any, stack []byte) string {
 	return fmt.Sprintf("panic: %v\n\n%s", value, stack)
 }
 
-type builder struct {
+type loggerBuilder struct {
 	logger *Logger
 }
 
-func (builder *builder) build() *Logger {
+func (builder *loggerBuilder) build() *Logger {
 	return builder.logger
 }
 
-func (builder *builder) initialize() *builder {
+func (builder *loggerBuilder) initialize() *loggerBuilder {
 	builder.logger = logrus.New()
 	return builder
 }
 
-func (builder *builder) setSeverity() *builder {
+func (builder *loggerBuilder) setSeverity() *loggerBuilder {
 	if level, err := logrus.ParseLevel(xbcfg.GetServiceLogLevel()); err != nil {
 		panic(err)
 	} else {
@@ -168,7 +168,7 @@ func (builder *builder) setSeverity() *builder {
 	return builder
 }
 
-func (builder *builder) setFormatter() *builder {
+func (builder *loggerBuilder) setFormatter() *loggerBuilder {
 	builder.logger.SetFormatter(&jsonifier{})
 	return builder
 }
@@ -236,8 +236,8 @@ func (builder *jsonBuilder) setCaller() *jsonBuilder {
 		delete(builder.entry.Data, SkipKey)
 	}
 	if caller := getCallerTracer().source(skip); caller != nil {
-		callerFunc := xbslice.Last(strings.Split(caller.Function, "/"))
-		builder.data["caller"] = fmt.Sprintf("%s:%d:%s", caller.File, caller.Line, callerFunc)
+		callerName := xbslice.Last(strings.Split(caller.Function, "/"))
+		builder.data["caller"] = fmt.Sprintf("%s:%d:%s", caller.File, caller.Line, callerName)
 	}
 	return builder
 }

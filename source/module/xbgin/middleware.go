@@ -49,7 +49,7 @@ const (
 func RecordMiddleware(ctx *Context) {
 	flow := &RecordMiddlewareFlow{}
 	flow.Initiate(ctx)
-	flow.SetTimer()
+	flow.SetWatch()
 	flow.SetBodies()
 	flow.NextFlow()
 	flow.SetFields()
@@ -58,13 +58,13 @@ func RecordMiddleware(ctx *Context) {
 
 type RecordMiddlewareFlow struct {
 	MiddlewareFlow
-	timer  *xbwatch.Timer
+	watch  *xbwatch.Watch
 	bodies []byte
 	fields xblogger.Fields
 }
 
-func (flow *RecordMiddlewareFlow) SetTimer() {
-	flow.timer = xbwatch.NewTimer()
+func (flow *RecordMiddlewareFlow) SetWatch() {
+	flow.watch = xbwatch.NewWatch()
 	return
 }
 
@@ -134,7 +134,7 @@ func (flow *RecordMiddlewareFlow) makeRequestContent() string {
 }
 
 func (flow *RecordMiddlewareFlow) makeResponseTime() float64 {
-	time := float64(flow.timer.Stamp().ElapsedTimeMs()) / 1000
+	time := float64(flow.watch.Stamp().ElapsedTimeMs()) / 1000
 	return time
 }
 

@@ -38,7 +38,7 @@ var (
 var metaMessageMap = map[string]*MetaMessage{}
 
 func NewMetaMessage(httpCode int, code, outText, logText string) *MetaMessage {
-	metaMessageMap[code] = (&builder{}).
+	metaMessageMap[code] = (&metaMessageBuilder{}).
 		initialize().
 		setCode(code).
 		setHTTPCode(httpCode).
@@ -84,20 +84,20 @@ func (metaMessage *MetaMessage) String() string {
 
 var metaMessageCodeRegex = regexp.MustCompile(`^[A-Z]{3}[0-9]{3}$`)
 
-type builder struct {
+type metaMessageBuilder struct {
 	metaMessage *MetaMessage
 }
 
-func (builder *builder) build() *MetaMessage {
+func (builder *metaMessageBuilder) build() *MetaMessage {
 	return builder.metaMessage
 }
 
-func (builder *builder) initialize() *builder {
+func (builder *metaMessageBuilder) initialize() *metaMessageBuilder {
 	builder.metaMessage = &MetaMessage{}
 	return builder
 }
 
-func (builder *builder) setCode(code string) *builder {
+func (builder *metaMessageBuilder) setCode(code string) *metaMessageBuilder {
 	if _, ok := metaMessageMap[code]; ok {
 		panic(fmt.Sprintf("Duplicate meta message code `%s` is found.", code))
 	}
@@ -108,7 +108,7 @@ func (builder *builder) setCode(code string) *builder {
 	return builder
 }
 
-func (builder *builder) setHTTPCode(httpCode int) *builder {
+func (builder *metaMessageBuilder) setHTTPCode(httpCode int) *metaMessageBuilder {
 	minCode, maxCode := http.StatusContinue, http.StatusNetworkAuthenticationRequired
 	if httpCode < minCode || httpCode > maxCode {
 		panic(fmt.Sprintf("HTTP code `%d` must be between `%d` and `%d`.", httpCode, minCode, maxCode))
@@ -117,17 +117,17 @@ func (builder *builder) setHTTPCode(httpCode int) *builder {
 	return builder
 }
 
-func (builder *builder) setLogText(logText string) *builder {
+func (builder *metaMessageBuilder) setLogText(logText string) *metaMessageBuilder {
 	builder.metaMessage.logText = logText
 	return builder
 }
 
-func (builder *builder) setOutCode() *builder {
+func (builder *metaMessageBuilder) setOutCode() *metaMessageBuilder {
 	builder.metaMessage.outCode = fmt.Sprintf("%s-%s", xbcfg.GetServiceCode(), builder.metaMessage.code)
 	return builder
 }
 
-func (builder *builder) setOutText(outText string) *builder {
+func (builder *metaMessageBuilder) setOutText(outText string) *metaMessageBuilder {
 	builder.metaMessage.outText = outText
 	return builder
 }

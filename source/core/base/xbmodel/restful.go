@@ -11,7 +11,6 @@ type JSONResponsePageMeta struct {
 
 type JSONResponseBaseData struct {
 	Code    string `json:"code"`
-	Status  bool   `json:"status"`
 	Message string `json:"message"`
 }
 

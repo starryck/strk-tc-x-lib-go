@@ -1,8 +1,8 @@
 package xbcfg
 
-var mConfig SpecConfig
+var mConfig Config
 
-type SpecConfig interface {
+type Config interface {
 	GetBasePath() string
 	GetGitTag() string
 	GetGitCommit() string
@@ -20,14 +20,14 @@ type SpecConfig interface {
 	GetServiceDeveloping() bool
 }
 
-func GetConfig() SpecConfig {
+func GetConfig() Config {
 	if mConfig == nil {
 		panic("Config hasn't been created.")
 	}
 	return mConfig
 }
 
-func SetConfig(config SpecConfig) {
+func SetConfig(config Config) {
 	mConfig = config
 }
 

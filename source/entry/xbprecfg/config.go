@@ -1,11 +1,11 @@
-package precfg
+package xbprecfg
 
 import (
 	"fmt"
 	"path"
 	"runtime"
 
-	"github.com/caarlos0/env/v7"
+	"github.com/caarlos0/env/v10"
 
 	"github.com/forbot161602/x-lib-go/source/core/base/xbcfg"
 	"github.com/forbot161602/x-lib-go/source/core/base/xbconst"
@@ -13,7 +13,7 @@ import (
 )
 
 func NewConfig() *Config {
-	config := (&builder{}).initialize().
+	config := (&configBuilder{}).initialize().
 		parseEnv().
 		setBasePath().
 		setServiceID().
@@ -31,7 +31,7 @@ var ServiceEnvironmentDevelopingMap = map[string]bool{
 	xbconst.EnvironmentProd:  false,
 }
 
-func ParseEnv(config xbcfg.SpecConfig) {
+func ParseEnv(config xbcfg.Config) {
 	if err := env.Parse(config); err != nil {
 		panic(err)
 	}
@@ -64,9 +64,9 @@ type Config struct {
 
 	ServiceID          string `json:"serviceID"`
 	ServiceCode        string `json:"serviceCode" env:"SRV_CODE" envDefault:"S001"`
-	ServiceName        string `json:"serviceName" env:"SRV_NAME" envDefault:"golang-lib"`
+	ServiceName        string `json:"serviceName" env:"SRV_NAME" envDefault:"lib-go"`
 	ServicePort        int    `json:"servicePort" env:"SRV_PORT" envDefault:"80"`
-	ServiceProject     string `json:"serviceProject" env:"SRV_PROJECT" envDefault:"open"`
+	ServiceProject     string `json:"serviceProject" env:"SRV_PROJECT" envDefault:"x"`
 	ServiceVersion     string `json:"serviceVersion" env:"SRV_VERSION" envDefault:"v1"`
 	ServiceEnvironment string `json:"serviceEnvironment" env:"SRV_ENVIRONMENT,notEmpty"`
 	ServiceLogLevel    string `json:"serviceLogLevel" env:"SRV_LOG_LEVEL" envDefault:"INFO"`
@@ -135,35 +135,35 @@ func (config *Config) GetServiceDeveloping() bool {
 	return config.ServiceDeveloping
 }
 
-type builder struct {
+type configBuilder struct {
 	config *Config
 }
 
-func (builder *builder) build() *Config {
+func (builder *configBuilder) build() *Config {
 	return builder.config
 }
 
-func (builder *builder) initialize() *builder {
+func (builder *configBuilder) initialize() *configBuilder {
 	builder.config = &Config{}
 	return builder
 }
 
-func (builder *builder) parseEnv() *builder {
+func (builder *configBuilder) parseEnv() *configBuilder {
 	ParseEnv(builder.config)
 	return builder
 }
 
-func (builder *builder) setBasePath() *builder {
+func (builder *configBuilder) setBasePath() *configBuilder {
 	builder.config.BasePath = MakeBasePath(4)
 	return builder
 }
 
-func (builder *builder) setServiceID() *builder {
+func (builder *configBuilder) setServiceID() *configBuilder {
 	builder.config.ServiceID = MakeServiceID()
 	return builder
 }
 
-func (builder *builder) setServiceDeveloping() *builder {
+func (builder *configBuilder) setServiceDeveloping() *configBuilder {
 	builder.config.ServiceDeveloping = MakeServiceDeveloping(builder.config.ServiceEnvironment)
 	return builder
 }

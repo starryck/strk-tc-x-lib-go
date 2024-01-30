@@ -25,7 +25,7 @@ func AsWrapError(err error) (target *WrapError, ok bool) {
 	return target, As(err, &target)
 }
 
-func AsBundleError(err error) (target BundleError, ok bool) {
+func AsNestedError(err error) (target NestedError, ok bool) {
 	return target, As(err, &target)
 }
 
@@ -49,8 +49,8 @@ func Unwrap(err error) []error {
 	if uerr := errors.Unwrap(err); uerr != nil {
 		return []error{uerr}
 	}
-	if berr, ok := err.(BundleError); ok {
-		return berr.Unwrap()
+	if nerr, ok := err.(NestedError); ok {
+		return nerr.Unwrap()
 	}
 	return nil
 }
@@ -104,13 +104,19 @@ func (err *WrapError) Unwrap() []error {
 	return err.errs
 }
 
-type BundleError interface {
+type (
+	Message   = xbmtmsg.MetaMessage
+	Options   = internalErrorOptions
+	LogFields = logrus.Fields
+)
+
+type NestedError interface {
 	Error() string
 	Unwrap() []error
 }
 
 type CustomError interface {
-	BundleError
+	NestedError
 	Message() *Message
 	Options() *Options
 	OutText() string
@@ -128,18 +134,6 @@ type InternalError struct {
 	logArgs   []any
 	logFields LogFields
 }
-
-type InternalErrorOptions struct {
-	OutArgs   []any
-	LogArgs   []any
-	LogFields LogFields
-}
-
-type (
-	Message   = xbmtmsg.MetaMessage
-	Options   = InternalErrorOptions
-	LogFields = logrus.Fields
-)
 
 func Internal(message *Message, options *Options, errs ...error) *InternalError {
 	err := (&internalErrorBuilder{options: options}).
@@ -193,6 +187,12 @@ func (err *InternalError) LogFields() LogFields {
 type internalErrorBuilder struct {
 	err     *InternalError
 	options *Options
+}
+
+type internalErrorOptions struct {
+	OutArgs   []any
+	LogArgs   []any
+	LogFields LogFields
 }
 
 func (builder *internalErrorBuilder) build() *InternalError {
