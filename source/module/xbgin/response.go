@@ -14,12 +14,6 @@ type (
 	JSONResponsePageData = xbmodel.JSONResponsePageData
 )
 
-type JSONResponse struct {
-	Code int `json:"-"`
-	Meta any `json:"meta"`
-	Data any `json:"data"`
-}
-
 func NewJSONResponse(message *MetaMessage, data any, options *JSONResponseOptions) *JSONResponse {
 	response := (&jsonResponseBuilder{message: message, data: data, options: options}).
 		initialize().
@@ -28,6 +22,12 @@ func NewJSONResponse(message *MetaMessage, data any, options *JSONResponseOption
 		setData().
 		build()
 	return response
+}
+
+type JSONResponse struct {
+	Code int `json:"-"`
+	Meta any `json:"meta"`
+	Data any `json:"data"`
 }
 
 type jsonResponseBuilder struct {

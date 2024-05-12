@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"sort"
 
-	lru "github.com/hashicorp/golang-lru/v2"
+	arc "github.com/hashicorp/golang-lru/arc/v2"
 )
 
 var sequenceKindSet = map[reflect.Kind]bool{
@@ -83,7 +83,7 @@ type ARCCache[T any] struct {
 	prefix string
 	keysep string
 	size   int
-	proxy  *lru.ARCCache[string, T]
+	proxy  *arc.ARCCache[string, T]
 }
 
 func (cache *ARCCache[T]) Has(keyfrags []any) bool {
@@ -190,6 +190,6 @@ func (builder *arcCacheBuilder[T]) setSize() *arcCacheBuilder[T] {
 }
 
 func (builder *arcCacheBuilder[T]) setProxy() *arcCacheBuilder[T] {
-	builder.cache.proxy, _ = lru.NewARC[string, T](builder.cache.size)
+	builder.cache.proxy, _ = arc.NewARC[string, T](builder.cache.size)
 	return builder
 }
