@@ -22,7 +22,7 @@ func init() {
 		HelpName:  "./main.exe",
 		ArgsUsage: "[arguments...]",
 		Authors: []*cli.Author{
-			&cli.Author{Name: "forbot161602@gmail.com"},
+			&cli.Author{Name: "gordon.lai@starryck.com"},
 		},
 		Action: func(c *cli.Context) error {
 			cli.ShowAppHelp(c)
