@@ -236,8 +236,27 @@ type KongFlow struct {
 	RESTFlow
 }
 
+func (flow *KongFlow) Initiate(ctx *Context) {
+	flow.RESTFlow.Initiate(ctx)
+	flow.setFields()
+	return
+}
+
+func (flow *KongFlow) setFields() {
+	fields := flow.Require(xbconst.FlowKeyRecordFields).(xblogger.Fields)
+	fields["RequestID"] = flow.GetRequestID()
+	fields["ConsumerCustomID"] = flow.GetConsumerCustomID()
+	fields["ConsumerGroups"] = flow.GetConsumerGroups()
+	return
+}
+
 func (flow *KongFlow) GetRequestID() string {
 	id := flow.GetHeader(xbconst.HeaderKongRequestID)
+	return id
+}
+
+func (flow *KongFlow) GetConsumerCustomID() string {
+	id := flow.GetHeader(xbconst.HeaderKongConsumerCustomID)
 	return id
 }
 
@@ -251,9 +270,9 @@ func (flow *KongFlow) IsAnonymousRequest() bool {
 	return xbslice.Contain(groups, xbconst.KongConsumerGroupAnonymous)
 }
 
-func (flow *KongFlow) IsOwnerRequest() bool {
+func (flow *KongFlow) IsUserRequest() bool {
 	groups := flow.GetConsumerGroups()
-	return xbslice.Contain(groups, xbconst.KongConsumerGroupOwner)
+	return xbslice.Contain(groups, xbconst.KongConsumerGroupUser)
 }
 
 func (flow *KongFlow) IsClientRequest() bool {
@@ -277,11 +296,84 @@ func (flow *KongFlow) IsInternalRequest() bool {
 }
 
 func (flow *KongFlow) IsExternalRequest() bool {
-	isValid := flow.IsOwnerRequest() || flow.IsClientRequest()
+	isValid := flow.IsUserRequest() || flow.IsClientRequest()
 	return isValid
 }
 
 func (flow *KongFlow) IsAuthenticatedRequest() bool {
+	isValid := flow.IsInternalRequest() || flow.IsExternalRequest()
+	return isValid
+}
+
+type APISIXFlow struct {
+	RESTFlow
+}
+
+func (flow *APISIXFlow) Initiate(ctx *Context) {
+	flow.RESTFlow.Initiate(ctx)
+	flow.setFields()
+	return
+}
+
+func (flow *APISIXFlow) setFields() {
+	fields := flow.Require(xbconst.FlowKeyRecordFields).(xblogger.Fields)
+	fields["RequestID"] = flow.GetRequestID()
+	fields["ConsumerName"] = flow.GetConsumerName()
+	fields["ConsumerGroupID"] = flow.GetConsumerGroupID()
+	return
+}
+
+func (flow *APISIXFlow) GetRequestID() string {
+	id := flow.GetHeader(xbconst.HeaderAPISIXRequestID)
+	return id
+}
+
+func (flow *APISIXFlow) GetConsumerName() string {
+	name := flow.GetHeader(xbconst.HeaderAPISIXConsumerName)
+	return name
+}
+
+func (flow *APISIXFlow) GetConsumerGroupID() string {
+	id := flow.GetHeader(xbconst.HeaderAPISIXConsumerGroupID)
+	return id
+}
+
+func (flow *APISIXFlow) IsAnonymousRequest() bool {
+	id := flow.GetConsumerGroupID()
+	return id == ""
+}
+
+func (flow *APISIXFlow) IsUserRequest() bool {
+	id := flow.GetConsumerGroupID()
+	return id == xbconst.APISIXConsumerGroupIDUser
+}
+
+func (flow *APISIXFlow) IsClientRequest() bool {
+	id := flow.GetConsumerGroupID()
+	return id == xbconst.APISIXConsumerGroupIDClient
+}
+
+func (flow *APISIXFlow) IsServiceRequest() bool {
+	id := flow.GetConsumerGroupID()
+	return id == xbconst.APISIXConsumerGroupIDService
+}
+
+func (flow *APISIXFlow) IsMonitorRequest() bool {
+	id := flow.GetConsumerGroupID()
+	return id == xbconst.APISIXConsumerGroupIDMonitor
+}
+
+func (flow *APISIXFlow) IsInternalRequest() bool {
+	isValid := flow.IsServiceRequest() || flow.IsMonitorRequest()
+	return isValid
+}
+
+func (flow *APISIXFlow) IsExternalRequest() bool {
+	isValid := flow.IsUserRequest() || flow.IsClientRequest()
+	return isValid
+}
+
+func (flow *APISIXFlow) IsAuthenticatedRequest() bool {
 	isValid := flow.IsInternalRequest() || flow.IsExternalRequest()
 	return isValid
 }

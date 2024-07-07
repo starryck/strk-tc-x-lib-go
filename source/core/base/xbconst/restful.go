@@ -10,14 +10,23 @@ const (
 	FlowKeyRequestData  = "#request_data"
 	FlowKeyRecordFields = "#record_fields"
 
-	HeaderRealIP             = "X-Real-Ip"
-	HeaderForwardedFor       = "X-Forwarded-For"
-	HeaderKongRequestID      = "Kong-Request-Id"
-	HeaderKongConsumerGroups = "X-Consumer-Groups"
+	HeaderRealIP       = "X-Real-Ip"
+	HeaderForwardedFor = "X-Forwarded-For"
 
+	HeaderKongRequestID        = "Kong-Request-Id"
+	HeaderKongConsumerCustomID = "X-Consumer-Custom-Id"
+	HeaderKongConsumerGroups   = "X-Consumer-Groups"
 	KongConsumerGroupAnonymous = "anonymous"
-	KongConsumerGroupOwner     = "owner"
+	KongConsumerGroupUser      = "owner"
 	KongConsumerGroupClient    = "client"
 	KongConsumerGroupService   = "service"
 	KongConsumerGroupMonitor   = "monitor"
+
+	HeaderAPISIXRequestID        = "X-Request-Id"
+	HeaderAPISIXConsumerName     = "X-Consumer-Name"
+	HeaderAPISIXConsumerGroupID  = "X-Consumer-Group-Id"
+	APISIXConsumerGroupIDUser    = "dft_user"
+	APISIXConsumerGroupIDClient  = "dft_client"
+	APISIXConsumerGroupIDService = "dft_service"
+	APISIXConsumerGroupIDMonitor = "dft_monitor"
 )

@@ -49,7 +49,6 @@ const (
 func RecordMiddleware(ctx *Context) {
 	flow := &RecordMiddlewareFlow{}
 	flow.Initiate(ctx)
-	flow.SetWatch()
 	flow.SetBodies()
 	flow.NextFlow()
 	flow.SetFields()
@@ -59,12 +58,16 @@ func RecordMiddleware(ctx *Context) {
 type RecordMiddlewareFlow struct {
 	MiddlewareFlow
 	watch  *xbwatch.Watch
-	bodies []byte
 	fields xblogger.Fields
+	bodies []byte
 }
 
-func (flow *RecordMiddlewareFlow) SetWatch() {
+func (flow *RecordMiddlewareFlow) Initiate(ctx *Context) {
+	flow.MiddlewareFlow.Initiate(ctx)
 	flow.watch = xbwatch.NewWatch()
+	flow.fields = xblogger.Fields{}
+	flow.bodies = make([]byte, MaxRequestBodyRecordSize)
+	flow.Expose(xbconst.FlowKeyRecordFields, flow.fields)
 	return
 }
 
@@ -75,10 +78,9 @@ func (flow *RecordMiddlewareFlow) SetBodies() {
 	}
 
 	buffer := &bytes.Buffer{}
-	bodies := make([]byte, MaxRequestBodyRecordSize)
+	bodies := flow.bodies
 	if length, _ := request.Body.Read(bodies); length > 0 {
 		buffer.Write(bodies[:length])
-		flow.bodies = buffer.Bytes()
 	}
 	for {
 		bodies := make([]byte, MaxRequestBodyReadSize)
@@ -93,18 +95,15 @@ func (flow *RecordMiddlewareFlow) SetBodies() {
 }
 
 func (flow *RecordMiddlewareFlow) SetFields() {
-	fields := xblogger.Fields{
-		"requestIP":      flow.makeRequestIP(),
-		"requestURI":     flow.makeRequestURI(),
-		"requestMethod":  flow.makeRequestMethod(),
-		"requestHandler": flow.makeRequestHandler(),
-		"requestContent": flow.makeRequestContent(),
-		"responseTime":   flow.makeResponseTime(),
-		"responseSize":   flow.makeResponseSize(),
-		"responseStatus": flow.makeResponseStatus(),
-	}
-	flow.fields = fields
-	flow.Expose(xbconst.FlowKeyRecordFields, fields)
+	fields := flow.fields
+	fields["requestIP"] = flow.makeRequestIP()
+	fields["requestURI"] = flow.makeRequestURI()
+	fields["requestMethod"] = flow.makeRequestMethod()
+	fields["requestHandler"] = flow.makeRequestHandler()
+	fields["requestContent"] = flow.makeRequestContent()
+	fields["responseTime"] = flow.makeResponseTime()
+	fields["responseSize"] = flow.makeResponseSize()
+	fields["responseStatus"] = flow.makeResponseStatus()
 	return
 }
 
