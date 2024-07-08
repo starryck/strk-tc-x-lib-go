@@ -29,9 +29,6 @@ var (
 		"Internal server error.")
 	WMV420 = NewMetaMessage(http.StatusBadRequest,
 		"WMV420", "RESTful view: Invalid parameter.",
-		"Request body must be not nil.")
-	WMV421 = NewMetaMessage(http.StatusBadRequest,
-		"WMV421", "RESTful view: Invalid parameter.",
 		"Request body must be bound correctly.")
 )
 

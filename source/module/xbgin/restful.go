@@ -9,7 +9,6 @@ import (
 
 	"github.com/forbot161602/x-lib-go/source/core/base/xbconst"
 	"github.com/forbot161602/x-lib-go/source/core/base/xbmtmsg"
-	"github.com/forbot161602/x-lib-go/source/core/toolkit/xbjson"
 	"github.com/forbot161602/x-lib-go/source/core/toolkit/xbslice"
 	"github.com/forbot161602/x-lib-go/source/core/utility/xberror"
 	"github.com/forbot161602/x-lib-go/source/core/utility/xblogger"
@@ -167,27 +166,17 @@ func (flow *RESTFlow) GetBody() io.ReadCloser {
 	return body
 }
 
-func (flow *RESTFlow) BindBody(value any) {
-	body := flow.GetBody()
-	if body == nil {
+func (flow *RESTFlow) BindBody(body any) {
+	if err := flow.context.ShouldBind(body); err != nil {
 		flow.SetError(xberror.Validation(xbmtmsg.WMV420, &xberror.Options{
 			LogFields: xblogger.Fields{
 				"requestBody": body,
+				"requestData": string(flow.RequireBytes(xbconst.FlowKeyRequestData)),
 			},
 		}))
 		return
 	}
-	data, _ := io.ReadAll(body)
-	if err := xbjson.Unmarshal(data, value); err != nil {
-		flow.SetError(xberror.Validation(xbmtmsg.WMV421, &xberror.Options{
-			LogFields: xblogger.Fields{
-				"requestData": string(data),
-			},
-		}))
-		return
-	}
-	flow.Expose(xbconst.FlowKeyRequestBody, value)
-	flow.Expose(xbconst.FlowKeyRequestData, data)
+	flow.Expose(xbconst.FlowKeyRequestBody, body)
 	return
 }
 

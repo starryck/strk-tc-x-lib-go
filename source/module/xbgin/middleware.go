@@ -66,7 +66,6 @@ func (flow *RecordMiddlewareFlow) Initiate(ctx *Context) {
 	flow.MiddlewareFlow.Initiate(ctx)
 	flow.watch = xbwatch.NewWatch()
 	flow.fields = xblogger.Fields{}
-	flow.bodies = make([]byte, MaxRequestBodyRecordSize)
 	flow.Expose(xbconst.FlowKeyRecordFields, flow.fields)
 	return
 }
@@ -78,9 +77,10 @@ func (flow *RecordMiddlewareFlow) SetBodies() {
 	}
 
 	buffer := &bytes.Buffer{}
-	bodies := flow.bodies
+	bodies := make([]byte, MaxRequestBodyRecordSize)
 	if length, _ := request.Body.Read(bodies); length > 0 {
 		buffer.Write(bodies[:length])
+		flow.bodies = buffer.Bytes()
 	}
 	for {
 		bodies := make([]byte, MaxRequestBodyReadSize)
@@ -91,6 +91,7 @@ func (flow *RecordMiddlewareFlow) SetBodies() {
 		}
 	}
 	request.Body = io.NopCloser(buffer)
+	flow.Expose(xbconst.FlowKeyRequestData, buffer.Bytes())
 	return
 }
 
