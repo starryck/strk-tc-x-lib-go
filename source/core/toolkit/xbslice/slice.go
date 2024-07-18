@@ -1,7 +1,7 @@
 package xbslice
 
 import (
-	"github.com/forbot161602/x-lib-go/source/core/toolkit/xbvalue"
+	"github.com/starryck/x-lib-go/source/core/toolkit/xbvalue"
 )
 
 func First[T any](elems []T) T {

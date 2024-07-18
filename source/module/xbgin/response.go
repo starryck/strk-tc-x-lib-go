@@ -1,8 +1,8 @@
 package xbgin
 
 import (
-	"github.com/forbot161602/x-lib-go/source/core/base/xbmodel"
-	"github.com/forbot161602/x-lib-go/source/core/base/xbmtmsg"
+	"github.com/starryck/x-lib-go/source/core/base/xbmodel"
+	"github.com/starryck/x-lib-go/source/core/base/xbmtmsg"
 )
 
 type (

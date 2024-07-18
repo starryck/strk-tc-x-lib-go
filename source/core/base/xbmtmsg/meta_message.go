@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/forbot161602/x-lib-go/source/core/base/xbcfg"
+	"github.com/starryck/x-lib-go/source/core/base/xbcfg"
 )
 
 // Code: {Severity Code (1)}{Project Code (1)}{Service Code (1)}{Sequence Number (3)}

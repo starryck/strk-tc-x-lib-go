@@ -4,7 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
-	"github.com/forbot161602/x-lib-go/source/utility/xbflow"
+	"github.com/starryck/x-lib-go/source/utility/xbflow"
 )
 
 type (

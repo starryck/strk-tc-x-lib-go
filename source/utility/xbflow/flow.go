@@ -7,10 +7,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/forbot161602/x-lib-go/source/core/base/xbconst"
-	"github.com/forbot161602/x-lib-go/source/core/toolkit/xbjson"
-	"github.com/forbot161602/x-lib-go/source/core/toolkit/xbrand"
-	"github.com/forbot161602/x-lib-go/source/core/utility/xblogger"
+	"github.com/starryck/x-lib-go/source/core/base/xbconst"
+	"github.com/starryck/x-lib-go/source/core/toolkit/xbjson"
+	"github.com/starryck/x-lib-go/source/core/toolkit/xbrand"
+	"github.com/starryck/x-lib-go/source/core/utility/xblogger"
 )
 
 type Flow interface {

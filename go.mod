@@ -1,4 +1,4 @@
-module github.com/forbot161602/x-lib-go
+module github.com/starryck/x-lib-go
 
 go 1.22
 

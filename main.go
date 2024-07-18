@@ -5,9 +5,9 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/forbot161602/x-lib-go/source/entry/xbinfo"
-	_ "github.com/forbot161602/x-lib-go/source/entry/xbpreset"
-	"github.com/forbot161602/x-lib-go/source/entry/xbscript"
+	"github.com/starryck/x-lib-go/source/entry/xbinfo"
+	_ "github.com/starryck/x-lib-go/source/entry/xbpreset"
+	"github.com/starryck/x-lib-go/source/entry/xbscript"
 )
 
 var (
