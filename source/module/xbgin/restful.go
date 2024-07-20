@@ -126,18 +126,32 @@ func (flow *RESTFlow) GetParam(key string) string {
 	return value
 }
 
+func (flow *RESTFlow) BindParams(value any) {
+	if err := flow.context.ShouldBindUri(value); err != nil {
+		flow.SetError(xberror.Validation(xbmtmsg.WMV450, &xberror.Options{
+			LogFields: xblogger.Fields{
+				"requestURI":   flow.GetRequestURI(),
+				"bindingValue": value,
+			},
+		}))
+		return
+	}
+	flow.Expose(xbconst.FlowKeyRequestParams, value)
+	return
+}
+
+func (flow *RESTFlow) ContainParams() bool {
+	ok := flow.Contain(xbconst.FlowKeyRequestParams)
+	return ok
+}
+
+func (flow *RESTFlow) RequireParams() any {
+	params := flow.Require(xbconst.FlowKeyRequestParams)
+	return params
+}
+
 func (flow *RESTFlow) GetQuery(key string) string {
 	value := flow.context.Query(key)
-	return value
-}
-
-func (flow *RESTFlow) GetQueryMap(key string) map[string]string {
-	value := flow.context.QueryMap(key)
-	return value
-}
-
-func (flow *RESTFlow) GetQueryArray(key string) []string {
-	value := flow.context.QueryArray(key)
 	return value
 }
 
@@ -146,9 +160,43 @@ func (flow *RESTFlow) GetQueryValues() url.Values {
 	return value
 }
 
+func (flow *RESTFlow) GetQueryMap(key string) map[string]string {
+	value := flow.context.QueryMap(key)
+	return value
+}
+
+func (flow *RESTFlow) GetQuerySlice(key string) []string {
+	value := flow.context.QueryArray(key)
+	return value
+}
+
 func (flow *RESTFlow) GetQueryFallback(key, fallback string) string {
 	value := flow.context.DefaultQuery(key, fallback)
 	return value
+}
+
+func (flow *RESTFlow) BindQueries(value any) {
+	if err := flow.context.ShouldBindQuery(value); err != nil {
+		flow.SetError(xberror.Validation(xbmtmsg.WMV451, &xberror.Options{
+			LogFields: xblogger.Fields{
+				"requestQueries": flow.GetQueryValues(),
+				"bindingValue":   value,
+			},
+		}))
+		return
+	}
+	flow.Expose(xbconst.FlowKeyRequestQueries, value)
+	return
+}
+
+func (flow *RESTFlow) ContainQueries() bool {
+	ok := flow.Contain(xbconst.FlowKeyRequestQueries)
+	return ok
+}
+
+func (flow *RESTFlow) RequireQueries() any {
+	queries := flow.Require(xbconst.FlowKeyRequestQueries)
+	return queries
 }
 
 func (flow *RESTFlow) GetHeader(key string) string {
@@ -161,22 +209,46 @@ func (flow *RESTFlow) GetHeaderValues() http.Header {
 	return value
 }
 
+func (flow *RESTFlow) BindHeaders(value any) {
+	if err := flow.context.ShouldBindHeader(value); err != nil {
+		flow.SetError(xberror.Validation(xbmtmsg.WMV452, &xberror.Options{
+			LogFields: xblogger.Fields{
+				"requestHeaders": flow.GetHeaderValues(),
+				"bindingValue":   value,
+			},
+		}))
+		return
+	}
+	flow.Expose(xbconst.FlowKeyRequestHeaders, value)
+	return
+}
+
+func (flow *RESTFlow) ContainHeaders() bool {
+	ok := flow.Contain(xbconst.FlowKeyRequestHeaders)
+	return ok
+}
+
+func (flow *RESTFlow) RequireHeaders() any {
+	headers := flow.Require(xbconst.FlowKeyRequestHeaders)
+	return headers
+}
+
 func (flow *RESTFlow) GetBody() io.ReadCloser {
 	body := flow.context.Request.Body
 	return body
 }
 
-func (flow *RESTFlow) BindBody(body any) {
-	if err := flow.context.ShouldBind(body); err != nil {
-		flow.SetError(xberror.Validation(xbmtmsg.WMV420, &xberror.Options{
+func (flow *RESTFlow) BindBody(value any) {
+	if err := flow.context.ShouldBind(value); err != nil {
+		flow.SetError(xberror.Validation(xbmtmsg.WMV453, &xberror.Options{
 			LogFields: xblogger.Fields{
-				"requestBody": body,
-				"requestData": string(flow.RequireBytes(xbconst.FlowKeyRequestData)),
+				"requestBody":  string(flow.RequireData()),
+				"bindingValue": value,
 			},
 		}))
 		return
 	}
-	flow.Expose(xbconst.FlowKeyRequestBody, body)
+	flow.Expose(xbconst.FlowKeyRequestBody, value)
 	return
 }
 

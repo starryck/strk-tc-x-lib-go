@@ -27,8 +27,17 @@ var (
 	EMV500 = NewMetaMessage(http.StatusInternalServerError,
 		"EMV500", "RESTful view: Internal server error.",
 		"Internal server error.")
-	WMV420 = NewMetaMessage(http.StatusBadRequest,
-		"WMV420", "RESTful view: Invalid parameter.",
+	WMV450 = NewMetaMessage(http.StatusBadRequest,
+		"WMV450", "RESTful view: Invalid parameter.",
+		"Request params must be bound correctly.")
+	WMV451 = NewMetaMessage(http.StatusBadRequest,
+		"WMV451", "RESTful view: Invalid parameter.",
+		"Request queries must be bound correctly.")
+	WMV452 = NewMetaMessage(http.StatusBadRequest,
+		"WMV452", "RESTful view: Invalid parameter.",
+		"Request headers must be bound correctly.")
+	WMV453 = NewMetaMessage(http.StatusBadRequest,
+		"WMV453", "RESTful view: Invalid parameter.",
 		"Request body must be bound correctly.")
 )
 

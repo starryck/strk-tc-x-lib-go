@@ -72,10 +72,6 @@ func (flow *RecordMiddlewareFlow) Initiate(ctx *Context) {
 
 func (flow *RecordMiddlewareFlow) SetBodies() {
 	request := flow.GetRequest()
-	if request.Body == nil {
-		return
-	}
-
 	buffer := &bytes.Buffer{}
 	bodies := make([]byte, MaxRequestBodyRecordSize)
 	if length, _ := request.Body.Read(bodies); length > 0 {
