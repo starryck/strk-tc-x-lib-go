@@ -1,17 +1,17 @@
 package xbgin
 
 import (
-	"github.com/starryck/x-lib-go/source/core/base/xbmodel"
 	"github.com/starryck/x-lib-go/source/core/base/xbmtmsg"
+	"github.com/starryck/x-lib-go/source/core/model/xbdata"
 )
 
 type (
 	MetaMessage = xbmtmsg.MetaMessage
 
-	JSONResponseMeta     = xbmodel.JSONResponseMeta
-	JSONResponsePageMeta = xbmodel.JSONResponsePageMeta
-	JSONResponseBaseData = xbmodel.JSONResponseBaseData
-	JSONResponsePageData = xbmodel.JSONResponsePageData
+	JSONResponseMeta     = xbdata.JSONResponseMeta
+	JSONResponsePageMeta = xbdata.JSONResponsePageMeta
+	JSONResponseBaseData = xbdata.JSONResponseBaseData
+	JSONResponsePageData = xbdata.JSONResponsePageData
 )
 
 func NewJSONResponse(message *MetaMessage, data any, options *JSONResponseOptions) *JSONResponse {
@@ -90,18 +90,12 @@ func (builder *jsonResponseBuilder) makeMeta() *JSONResponseMeta {
 }
 
 func (builder *jsonResponseBuilder) makePageMeta() *JSONResponsePageMeta {
-	data := *builder.options.PageData
 	meta := &JSONResponsePageMeta{
 		JSONResponseBaseData: JSONResponseBaseData{
 			Code:    builder.makeMetaCode(),
 			Message: builder.makeMetaMessage(),
 		},
-		JSONResponsePageData: JSONResponsePageData{
-			PageIndex:   data.PageIndex,
-			PageSize:    data.PageSize,
-			PageConut:   data.PageConut,
-			RecordCount: data.RecordCount,
-		},
+		JSONResponsePageData: *builder.options.PageData,
 	}
 	return meta
 }
