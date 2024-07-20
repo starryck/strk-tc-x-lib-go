@@ -18,6 +18,12 @@ type Config interface {
 	GetServiceTesting() bool
 	GetServiceDebugging() bool
 	GetServiceDeveloping() bool
+
+	GetPostgresHost() string
+	GetPostgresPort() string
+	GetPostgresName() string
+	GetPostgresUser() string
+	GetPostgresPassword() string
 }
 
 func GetConfig() Config {
@@ -89,4 +95,26 @@ func GetServiceDebugging() bool {
 
 func GetServiceDeveloping() bool {
 	return GetConfig().GetServiceDeveloping()
+}
+
+// Postgres server
+
+func GetPostgresHost() string {
+	return GetConfig().GetPostgresHost()
+}
+
+func GetPostgresPort() string {
+	return GetConfig().GetPostgresPort()
+}
+
+func GetPostgresName() string {
+	return GetConfig().GetPostgresName()
+}
+
+func GetPostgresUser() string {
+	return GetConfig().GetPostgresUser()
+}
+
+func GetPostgresPassword() string {
+	return GetConfig().GetPostgresPassword()
 }

@@ -73,6 +73,12 @@ type Config struct {
 	ServiceTesting     bool   `json:"serviceTesting" env:"SRV_TESTING" envDefault:"false"`
 	ServiceDebugging   bool   `json:"serviceDebugging" env:"SRV_DEBUGGING" envDefault:"false"`
 	ServiceDeveloping  bool   `json:"serviceDeveloping"`
+
+	PostgresHost     string `env:"POSTGRES_HOST"`
+	PostgresPort     string `env:"POSTGRES_PORT" envDefault:"5432"`
+	PostgresName     string `env:"POSTGRES_NAME"`
+	PostgresUser     string `env:"POSTGRES_USER"`
+	PostgresPassword string `env:"POSTGRES_PASSWORD"`
 }
 
 // Base definition
@@ -133,6 +139,28 @@ func (config *Config) GetServiceDebugging() bool {
 
 func (config *Config) GetServiceDeveloping() bool {
 	return config.ServiceDeveloping
+}
+
+// Postgres server
+
+func (config *Config) GetPostgresHost() string {
+	return config.PostgresHost
+}
+
+func (config *Config) GetPostgresPort() string {
+	return config.PostgresPort
+}
+
+func (config *Config) GetPostgresName() string {
+	return config.PostgresName
+}
+
+func (config *Config) GetPostgresUser() string {
+	return config.PostgresUser
+}
+
+func (config *Config) GetPostgresPassword() string {
+	return config.PostgresPassword
 }
 
 type configBuilder struct {
