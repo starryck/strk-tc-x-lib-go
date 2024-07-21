@@ -28,12 +28,12 @@ func newJSON() JSON {
 	return json
 }
 
-func Marshal(v any) ([]byte, error) {
-	bytes, err := getJSON().Marshal(v)
-	return bytes, err
+func Marshal(value any) ([]byte, error) {
+	data, err := getJSON().Marshal(value)
+	return data, err
 }
 
-func Unmarshal(data []byte, v any) error {
-	err := getJSON().Unmarshal(data, v)
+func Unmarshal(data []byte, value any) error {
+	err := getJSON().Unmarshal(data, value)
 	return err
 }

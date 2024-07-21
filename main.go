@@ -24,8 +24,8 @@ func init() {
 		Authors: []*cli.Author{
 			&cli.Author{Name: "gordon.lai@starryck.com"},
 		},
-		Action: func(c *cli.Context) error {
-			cli.ShowAppHelp(c)
+		Action: func(ctx *cli.Context) error {
+			cli.ShowAppHelp(ctx)
 			return nil
 		},
 		Commands: []*cli.Command{
@@ -34,7 +34,7 @@ func init() {
 				Usage:     "Present service information",
 				HelpName:  "show-info",
 				ArgsUsage: "[arguments...]",
-				Action: func(c *cli.Context) error {
+				Action: func(ctx *cli.Context) error {
 					return xbinfo.Execute()
 				},
 			},
@@ -43,7 +43,7 @@ func init() {
 				Usage:     "Perform a script",
 				HelpName:  "run-script",
 				ArgsUsage: "[arguments...]",
-				Action: func(c *cli.Context) error {
+				Action: func(ctx *cli.Context) error {
 					return xbscript.Execute()
 				},
 			},
