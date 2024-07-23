@@ -36,7 +36,7 @@ func (unixTime UnixTime) Value() (driver.Value, error) {
 	return value, nil
 }
 
-func (unixTime *UnixTime) Scan(data any) (err error) {
+func (unixTime *UnixTime) Scan(data any) error {
 	var value time.Time
 	switch data.(type) {
 	case time.Time:
@@ -48,8 +48,10 @@ func (unixTime *UnixTime) Scan(data any) (err error) {
 		} else {
 			date = string(data.([]byte))
 		}
-		if value, err = time.Parse(time.RFC3339, date); err != nil {
+		if mValue, err := time.Parse(time.RFC3339, date); err != nil {
 			return err
+		} else {
+			value = mValue
 		}
 	default:
 		return xberror.Newf("Unsupported type of data `%#v`.", []any{data})

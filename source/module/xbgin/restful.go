@@ -4,12 +4,12 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"slices"
 	"strings"
 	"sync"
 
 	"github.com/starryck/x-lib-go/source/core/base/xbconst"
 	"github.com/starryck/x-lib-go/source/core/base/xbmtmsg"
-	"github.com/starryck/x-lib-go/source/core/toolkit/xbslice"
 	"github.com/starryck/x-lib-go/source/core/utility/xberror"
 	"github.com/starryck/x-lib-go/source/core/utility/xblogger"
 )
@@ -328,27 +328,27 @@ func (flow *KongFlow) GetConsumerGroups() []string {
 
 func (flow *KongFlow) IsAnonymousRequest() bool {
 	groups := flow.GetConsumerGroups()
-	return xbslice.Contain(groups, xbconst.KongConsumerGroupAnonymous)
+	return slices.Contains(groups, xbconst.KongConsumerGroupAnonymous)
 }
 
 func (flow *KongFlow) IsUserRequest() bool {
 	groups := flow.GetConsumerGroups()
-	return xbslice.Contain(groups, xbconst.KongConsumerGroupUser)
+	return slices.Contains(groups, xbconst.KongConsumerGroupUser)
 }
 
 func (flow *KongFlow) IsClientRequest() bool {
 	groups := flow.GetConsumerGroups()
-	return xbslice.Contain(groups, xbconst.KongConsumerGroupClient)
+	return slices.Contains(groups, xbconst.KongConsumerGroupClient)
 }
 
 func (flow *KongFlow) IsServiceRequest() bool {
 	groups := flow.GetConsumerGroups()
-	return xbslice.Contain(groups, xbconst.KongConsumerGroupService)
+	return slices.Contains(groups, xbconst.KongConsumerGroupService)
 }
 
 func (flow *KongFlow) IsMonitorRequest() bool {
 	groups := flow.GetConsumerGroups()
-	return xbslice.Contain(groups, xbconst.KongConsumerGroupMonitor)
+	return slices.Contains(groups, xbconst.KongConsumerGroupMonitor)
 }
 
 func (flow *KongFlow) IsInternalRequest() bool {

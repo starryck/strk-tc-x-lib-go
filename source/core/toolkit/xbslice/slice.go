@@ -1,6 +1,8 @@
 package xbslice
 
 import (
+	"math"
+
 	"github.com/starryck/x-lib-go/source/core/toolkit/xbvalue"
 )
 
@@ -18,11 +20,27 @@ func Last[T any](elems []T) T {
 	return elems[len(elems)-1]
 }
 
-func Contain[T comparable](elems []T, value T) bool {
-	for _, elem := range elems {
-		if elem == value {
-			return true
-		}
+func Copy[T any](elems []T, lower, upper, step int) []T {
+	size := int(math.Ceil(float64(upper-lower) / float64(step)))
+	slice := make([]T, size)
+	for i := 0; i < size; i++ {
+		slice[i] = elems[lower+i*step]
 	}
-	return false
+	return slice
+}
+
+func Defaults[T any](size int, value T) []T {
+	slice := make([]T, size)
+	for i := 0; i < size; i++ {
+		slice[i] = value
+	}
+	return slice
+}
+
+func ToInterfaces[T any](elems []T) []any {
+	slice := make([]any, len(elems))
+	for i, elem := range elems {
+		slice[i] = elem
+	}
+	return slice
 }
