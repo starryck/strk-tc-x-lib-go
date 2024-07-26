@@ -327,4 +327,5 @@ func (flow *BaseFlow) Async(operate Operate, args ...any) {
 			flow.GetLogger().WithError(err).Error("Flow async operation failed.")
 		}
 	}()
+	return
 }
