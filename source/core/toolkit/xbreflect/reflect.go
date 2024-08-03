@@ -166,3 +166,17 @@ func areAllMembersNil(value Value) bool {
 	}
 	return false
 }
+
+func Destine(input any) any {
+	return destine(reflect.ValueOf(input))
+}
+
+func destine(value Value) any {
+	switch kind := value.Kind(); kind {
+	case reflect.Invalid:
+		return nil
+	case reflect.Ptr:
+		return destine(value.Elem())
+	}
+	return value.Interface()
+}

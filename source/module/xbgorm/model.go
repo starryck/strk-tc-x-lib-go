@@ -235,6 +235,11 @@ func (dao *ModelDAO[T]) Debug() *ModelDAO[T] {
 	return dao
 }
 
+func (dao *ModelDAO[T]) Unscoped() *ModelDAO[T] {
+	dao.client = dao.client.Unscoped()
+	return dao
+}
+
 func (dao *ModelDAO[T]) WithContext(ctx context.Context) *ModelDAO[T] {
 	dao.client = dao.client.WithContext(ctx)
 	return dao
