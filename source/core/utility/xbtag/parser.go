@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	DefaultStructTagSeparatorTag    = ";"
-	DefaultStructTagSeparatorFlag   = ":"
-	DefaultStructTagSeparatorEscape = '\\'
+	defaultStructTagSeparatorTag    = ";"
+	defaultStructTagSeparatorFlag   = ":"
+	defaultStructTagSeparatorEscape = '\\'
 )
 
 func ParseStructTag(name string, input any, options *StructTagParserOptions) StructTagMap {
@@ -106,7 +106,7 @@ func (parser *StructTagParser) checkInputRecursively(input any) (any, bool) {
 func (parser *StructTagParser) setupTagSeparator() {
 	sep := parser.options.TagSeparator
 	if sep == nil {
-		sep = xbvalue.Refer(DefaultStructTagSeparatorTag)
+		sep = xbvalue.Refer(defaultStructTagSeparatorTag)
 	}
 	parser.tagSeparator = sep
 }
@@ -114,7 +114,7 @@ func (parser *StructTagParser) setupTagSeparator() {
 func (parser *StructTagParser) setupFlagSeparator() {
 	sep := parser.options.FlagSeparator
 	if sep == nil {
-		sep = xbvalue.Refer(DefaultStructTagSeparatorFlag)
+		sep = xbvalue.Refer(defaultStructTagSeparatorFlag)
 	}
 	parser.flagSeparator = sep
 }
@@ -251,7 +251,7 @@ func (parser *StructTagParser) makeSplitTexts(value, separator string) []string 
 		text := parts[i]
 		textSize := len(text)
 		if textSize > 0 {
-			for text[textSize-1] == DefaultStructTagSeparatorEscape {
+			for text[textSize-1] == defaultStructTagSeparatorEscape {
 				i += 1
 				if i >= partsSize {
 					break

@@ -63,9 +63,9 @@ func makeNonsequenceKeyPart(keyfrag any, keysep string) string {
 }
 
 const (
-	DefaultKeyPrefix    = ""
-	DefaultKeySeparator = ":"
-	DefaultProxySize    = 2 << 7
+	defaultKeyPrefix    = ""
+	defaultKeySeparator = ":"
+	defaultProxySize    = 2 << 7
 )
 
 func NewARCCache[T any](options *ARCCacheOptions) *ARCCache[T] {
@@ -164,7 +164,7 @@ func (builder *arcCacheBuilder[T]) setPrefix() *arcCacheBuilder[T] {
 	if prefix != nil {
 		builder.cache.prefix = *prefix
 	} else {
-		builder.cache.prefix = DefaultKeyPrefix
+		builder.cache.prefix = defaultKeyPrefix
 	}
 	return builder
 }
@@ -174,7 +174,7 @@ func (builder *arcCacheBuilder[T]) setKeysep() *arcCacheBuilder[T] {
 	if keysep != nil {
 		builder.cache.keysep = *keysep
 	} else {
-		builder.cache.keysep = DefaultKeySeparator
+		builder.cache.keysep = defaultKeySeparator
 	}
 	return builder
 }
@@ -184,7 +184,7 @@ func (builder *arcCacheBuilder[T]) setSize() *arcCacheBuilder[T] {
 	if size != nil {
 		builder.cache.size = *size
 	} else {
-		builder.cache.size = DefaultProxySize
+		builder.cache.size = defaultProxySize
 	}
 	return builder
 }

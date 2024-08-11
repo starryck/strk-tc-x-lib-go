@@ -59,9 +59,9 @@ func WithWaitGroup(operate Operate, args ...any) {
 }
 
 const (
-	ExitCodeDefault = -1 + iota
-	ExitCodeSuccess
-	ExitCodeFailure
+	exitCodeDefault = -1 + iota
+	exitCodeSuccess
+	exitCodeFailure
 )
 
 type Operate func(args ...any)
@@ -150,10 +150,10 @@ func (supervisor *Supervisor) waitDaemons() {
 		case <-ticker.C:
 			supervisor.emitBeatInfo()
 		case <-timer:
-			supervisor.exitCode = ExitCodeFailure
+			supervisor.exitCode = exitCodeFailure
 			return
 		case <-supervisor.waitChannel:
-			supervisor.exitCode = ExitCodeSuccess
+			supervisor.exitCode = exitCodeSuccess
 			return
 		}
 	}
@@ -162,9 +162,9 @@ func (supervisor *Supervisor) waitDaemons() {
 func (supervisor *Supervisor) emitExitInfo() {
 	fields := supervisor.makeLoggerFields()
 	switch supervisor.exitCode {
-	case ExitCodeSuccess:
+	case exitCodeSuccess:
 		xblogger.WithFields(fields).Info("Supervisor gracefully shut down normally.")
-	case ExitCodeFailure:
+	case exitCodeFailure:
 		xblogger.WithFields(fields).Warn("Supervisor gracefully shut down abnormally.")
 	}
 }
@@ -186,8 +186,8 @@ func (supervisor *Supervisor) makeLoggerFields() xblogger.Fields {
 }
 
 const (
-	DefaultGracefulTimeout   = 30 * time.Second
-	DefaultHeartbeatInterval = 5 * time.Minute
+	defaultGracefulTimeout   = 30 * time.Second
+	defaultHeartbeatInterval = 5 * time.Minute
 )
 
 type supervisorBuilder struct {
@@ -213,7 +213,7 @@ func (builder *supervisorBuilder) initialize() *supervisorBuilder {
 }
 
 func (builder *supervisorBuilder) setExitCode() *supervisorBuilder {
-	builder.supervisor.exitCode = ExitCodeDefault
+	builder.supervisor.exitCode = exitCodeDefault
 	return builder
 }
 
@@ -242,7 +242,7 @@ func (builder *supervisorBuilder) setGracefulTimeout() *supervisorBuilder {
 	if gracefulTimeout != nil {
 		builder.supervisor.gracefulTimeout = *gracefulTimeout
 	} else {
-		builder.supervisor.gracefulTimeout = DefaultGracefulTimeout
+		builder.supervisor.gracefulTimeout = defaultGracefulTimeout
 	}
 	return builder
 }
@@ -252,7 +252,7 @@ func (builder *supervisorBuilder) setHeartbeatInterval() *supervisorBuilder {
 	if heartbeatInterval != nil {
 		builder.supervisor.heartbeatInterval = *heartbeatInterval
 	} else {
-		builder.supervisor.heartbeatInterval = DefaultHeartbeatInterval
+		builder.supervisor.heartbeatInterval = defaultHeartbeatInterval
 	}
 	return builder
 }

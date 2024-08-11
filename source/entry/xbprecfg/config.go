@@ -74,11 +74,11 @@ type Config struct {
 	ServiceDebugging   bool   `json:"serviceDebugging" env:"SRV_DEBUGGING" envDefault:"false"`
 	ServiceDeveloping  bool   `json:"serviceDeveloping"`
 
-	PostgresHost     string `env:"POSTGRES_HOST"`
-	PostgresPort     string `env:"POSTGRES_PORT" envDefault:"5432"`
-	PostgresName     string `env:"POSTGRES_NAME"`
-	PostgresUser     string `env:"POSTGRES_USER"`
-	PostgresPassword string `env:"POSTGRES_PASSWORD"`
+	PostgresHost     string `json:"postgresHost" env:"POSTGRES_HOST"`
+	PostgresPort     string `json:"postgresPort" env:"POSTGRES_PORT" envDefault:"5432"`
+	PostgresName     string `json:"postgresName" env:"POSTGRES_NAME"`
+	PostgresUser     string `json:"postgresUser" env:"POSTGRES_USER"`
+	PostgresPassword string `json:"postgresPassword" env:"POSTGRES_PASSWORD"`
 }
 
 // Base definition

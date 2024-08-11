@@ -1,13 +1,9 @@
 package xbdata
 
-type PaginationQuery struct {
-	PageIndex int `json:"pageIndex"`
-	PageSize  int `json:"pageSize"`
-}
-
 type PaginationResult struct {
-	PaginationQuery
-	PageConut   int `json:"pageCount"`
+	PageIndex   int `json:"pageIndex"`
+	PageSize    int `json:"pageSize"`
+	PageCount   int `json:"pageCount"`
 	RecordCount int `json:"recordCount"`
 }
 

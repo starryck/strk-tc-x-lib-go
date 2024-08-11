@@ -172,21 +172,22 @@ func Base64URLDecodeAtoa(src string) (string, error) {
 }
 
 var (
-	Base10Bytes    = []byte("0123456789")
-	Base16Bytes    = []byte("0123456789ABCDEF")
-	Base36Bytes    = []byte("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-	Base62Bytes    = []byte("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
-	Base10IndexMap = map[byte]int64{}
-	Base16IndexMap = map[byte]int64{}
-	Base36IndexMap = map[byte]int64{}
-	Base62IndexMap = map[byte]int64{}
+	Base10Bytes = []byte("0123456789")
+	Base16Bytes = []byte("0123456789ABCDEF")
+	Base36Bytes = []byte("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	Base62Bytes = []byte("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+
+	base10IndexMap = map[byte]int64{}
+	base16IndexMap = map[byte]int64{}
+	base36IndexMap = map[byte]int64{}
+	base62IndexMap = map[byte]int64{}
 )
 
 func init() {
-	initBaseNIndexes(Base10Bytes, Base10IndexMap)
-	initBaseNIndexes(Base16Bytes, Base16IndexMap)
-	initBaseNIndexes(Base36Bytes, Base36IndexMap)
-	initBaseNIndexes(Base62Bytes, Base62IndexMap)
+	initBaseNIndexes(Base10Bytes, base10IndexMap)
+	initBaseNIndexes(Base16Bytes, base16IndexMap)
+	initBaseNIndexes(Base36Bytes, base36IndexMap)
+	initBaseNIndexes(Base62Bytes, base62IndexMap)
 }
 
 func initBaseNIndexes(radixes []byte, indexes map[byte]int64) {
@@ -232,7 +233,7 @@ func Base10EncodeItoa(num int64) string {
 }
 
 func Base10DecodeAtoi(rstr string) int64 {
-	return BaseNDecodeAtoi(rstr, Base10IndexMap)
+	return BaseNDecodeAtoi(rstr, base10IndexMap)
 }
 
 func Base16EncodeItoa(num int64) string {
@@ -240,7 +241,7 @@ func Base16EncodeItoa(num int64) string {
 }
 
 func Base16DecodeAtoi(rstr string) int64 {
-	return BaseNDecodeAtoi(rstr, Base16IndexMap)
+	return BaseNDecodeAtoi(rstr, base16IndexMap)
 }
 
 func Base36EncodeItoa(num int64) string {
@@ -248,7 +249,7 @@ func Base36EncodeItoa(num int64) string {
 }
 
 func Base36DecodeAtoi(rstr string) int64 {
-	return BaseNDecodeAtoi(rstr, Base36IndexMap)
+	return BaseNDecodeAtoi(rstr, base36IndexMap)
 }
 
 func Base62EncodeItoa(num int64) string {
@@ -256,5 +257,5 @@ func Base62EncodeItoa(num int64) string {
 }
 
 func Base62DecodeAtoi(rstr string) int64 {
-	return BaseNDecodeAtoi(rstr, Base62IndexMap)
+	return BaseNDecodeAtoi(rstr, base62IndexMap)
 }

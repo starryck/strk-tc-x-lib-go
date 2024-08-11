@@ -7,8 +7,7 @@ import (
 
 func Execute() error {
 	xblogger.WithFields(xblogger.Fields{
-		"gitTag":    xbcfg.GetGitTag(),
-		"gitCommit": xbcfg.GetGitCommit(),
+		"config": xbcfg.GetConfig(),
 	}).Info("Log info message.")
 	return nil
 }

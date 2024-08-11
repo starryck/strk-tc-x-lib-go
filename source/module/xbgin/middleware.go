@@ -42,8 +42,8 @@ func (flow *GraceMiddlewareFlow) NextFlow() {
 }
 
 const (
-	MaxRequestBodyReadSize   = 1 << 12
-	MaxRequestBodyRecordSize = 1 << 16
+	maxRequestBodyReadSize   = 1 << 12
+	maxRequestBodyRecordSize = 1 << 16
 )
 
 func RecordMiddleware(ctx *Context) {
@@ -73,13 +73,13 @@ func (flow *RecordMiddlewareFlow) Initiate(ctx *Context) {
 func (flow *RecordMiddlewareFlow) SetBodies() {
 	request := flow.GetRequest()
 	buffer := &bytes.Buffer{}
-	bodies := make([]byte, MaxRequestBodyRecordSize)
+	bodies := make([]byte, maxRequestBodyRecordSize)
 	if length, _ := request.Body.Read(bodies); length > 0 {
 		buffer.Write(bodies[:length])
 		flow.bodies = buffer.Bytes()
 	}
 	for {
-		bodies := make([]byte, MaxRequestBodyReadSize)
+		bodies := make([]byte, maxRequestBodyReadSize)
 		if length, _ := request.Body.Read(bodies); length > 0 {
 			buffer.Write(bodies[:length])
 		} else {
