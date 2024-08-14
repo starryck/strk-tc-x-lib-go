@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/starryck/x-lib-go/source/core/utility/xblist"
+	"github.com/starryck/x-lib-go/source/core/utility/xbctnr"
 )
 
 type ModelDAO[T any] struct {
@@ -315,11 +315,11 @@ func (repository *ModelRepository) SetClient(client *Client) {
 
 type ModelService struct {
 	client   *Client
-	sessions *xblist.Deque[*Client]
+	sessions *xbctnr.Deque[*Client]
 }
 
 func (service *ModelService) Initialize() {
-	service.sessions = &xblist.Deque[*Client]{}
+	service.sessions = &xbctnr.Deque[*Client]{}
 }
 
 func (service *ModelService) GetClient() *Client {

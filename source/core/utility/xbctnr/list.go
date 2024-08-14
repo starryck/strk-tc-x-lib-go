@@ -1,4 +1,4 @@
-package xblist
+package xbctnr
 
 import "github.com/starryck/x-lib-go/source/core/toolkit/xbvalue"
 
@@ -6,6 +6,11 @@ type Queue[T any] struct {
 	size int
 	head *QueueNode[T]
 	tail *QueueNode[T]
+}
+
+type QueueNode[T any] struct {
+	next  *QueueNode[T]
+	value T
 }
 
 func (queue *Queue[T]) Size() int {
@@ -86,11 +91,6 @@ func (queue *Queue[T]) Clear() {
 	queue.tail = nil
 }
 
-type QueueNode[T any] struct {
-	next  *QueueNode[T]
-	value T
-}
-
 type QueueIterator[T any] struct {
 	next *QueueNode[T]
 }
@@ -108,6 +108,12 @@ type Deque[T any] struct {
 	size int
 	head *DequeNode[T]
 	tail *DequeNode[T]
+}
+
+type DequeNode[T any] struct {
+	prev  *DequeNode[T]
+	next  *DequeNode[T]
+	value T
 }
 
 func (deque *Deque[T]) Size() int {
@@ -185,7 +191,7 @@ func (deque *Deque[T]) Slice() []T {
 
 func (deque *Deque[T]) Iterator() *DequeIterator[T] {
 	next := deque.head
-	return &DequeIterator[T]{next: next, deque: deque}
+	return &DequeIterator[T]{deque: deque, next: next}
 }
 
 func (deque *Deque[T]) RPush(value T) {
@@ -259,7 +265,7 @@ func (deque *Deque[T]) RSlice() []T {
 
 func (deque *Deque[T]) RIterator() *DequeReverseIterator[T] {
 	next := deque.tail
-	return &DequeReverseIterator[T]{next: next, deque: deque}
+	return &DequeReverseIterator[T]{deque: deque, next: next}
 }
 
 func (deque *Deque[T]) Drop(node *DequeNode[T]) (T, bool) {
@@ -282,16 +288,10 @@ func (deque *Deque[T]) Clear() {
 	deque.tail = nil
 }
 
-type DequeNode[T any] struct {
-	prev  *DequeNode[T]
-	next  *DequeNode[T]
-	value T
-}
-
 type DequeIterator[T any] struct {
+	deque *Deque[T]
 	prev  *DequeNode[T]
 	next  *DequeNode[T]
-	deque *Deque[T]
 }
 
 func (iterator *DequeIterator[T]) Drop() (T, bool) {
@@ -313,9 +313,9 @@ func (iterator *DequeIterator[T]) Next() (T, bool) {
 }
 
 type DequeReverseIterator[T any] struct {
+	deque *Deque[T]
 	prev  *DequeNode[T]
 	next  *DequeNode[T]
-	deque *Deque[T]
 }
 
 func (iterator *DequeReverseIterator[T]) Drop() (T, bool) {
