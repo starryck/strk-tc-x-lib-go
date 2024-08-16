@@ -7,6 +7,195 @@ import (
 	"github.com/starryck/x-lib-go/source/core/toolkit/xbvalue"
 )
 
+const heapNodeIndexFirst = 0
+
+type Heap[T HeapValue[T]] struct {
+	values []T
+}
+
+type HeapValue[T any] xbtype.Comparable[T]
+
+func (heap *Heap[T]) Size() int {
+	return len(heap.values)
+}
+
+func (heap *Heap[T]) Push(value T) {
+	node := newHeapNode(heap, heap.Size())
+	heap.push(value)
+	heap.swim(node)
+}
+
+func (heap *Heap[T]) Pull() (T, bool) {
+	if heap.Size() == 0 {
+		return xbvalue.Zero[T](), false
+	}
+	if heap.Size() == 1 {
+		return heap.pop(), true
+	}
+	node := newHeapNode(heap, heapNodeIndexFirst)
+	return heap.drop(node), true
+}
+
+func (heap *Heap[T]) Peek() (T, bool) {
+	if heap.Size() == 0 {
+		return xbvalue.Zero[T](), false
+	}
+	return heap.values[heapNodeIndexFirst], true
+}
+
+func (heap *Heap[T]) Slice() []T {
+	return heap.values
+}
+
+func (heap *Heap[T]) Iterator() *HeapIterator[T] {
+	return &HeapIterator[T]{heap: heap}
+}
+
+func (heap *Heap[T]) Clear() {
+	heap.values = []T{}
+}
+
+func (heap *Heap[T]) push(value T) {
+	heap.values = append(heap.values, value)
+}
+
+func (heap *Heap[T]) pop() T {
+	value := heap.values[heap.Size()-1]
+	heap.values = heap.values[:heap.Size()-1]
+	return value
+}
+
+func (heap *Heap[T]) drop(node *heapNode[T]) T {
+	dest := node.toLast()
+	dest.exchange(node)
+	value := heap.pop()
+	heap.sink(dest)
+	return value
+}
+
+func (heap *Heap[T]) swim(node *heapNode[T]) {
+	next := node.toParent()
+	for next != nil {
+		if node.isValueGte(next) {
+			break
+		}
+		node.exchange(next)
+		next = node.toParent()
+	}
+}
+
+func (heap *Heap[T]) sink(node *heapNode[T]) {
+	next := node.toLeftChild()
+	for next != nil {
+		if dest := node.toRightChild(); dest != nil && dest.isValueLt(next) {
+			next = dest
+		}
+		if node.isValueLte(next) {
+			break
+		}
+		node.exchange(next)
+		next = node.toLeftChild()
+	}
+}
+
+func newHeapNode[T HeapValue[T]](heap *Heap[T], index int) *heapNode[T] {
+	return &heapNode[T]{heap: heap, index: index}
+}
+
+type heapNode[T HeapValue[T]] struct {
+	heap  *Heap[T]
+	index int
+}
+
+func (node *heapNode[T]) getValue() T {
+	return node.heap.values[node.index]
+}
+
+func (node *heapNode[T]) exchange(dest *heapNode[T]) {
+	*node, *dest = *dest, *node
+	values := node.heap.values
+	values[node.index], values[dest.index] = values[dest.index], values[node.index]
+}
+
+func (node *heapNode[T]) compare(dest *heapNode[T]) int {
+	return node.getValue().Compare(dest.getValue())
+}
+
+func (node *heapNode[T]) isValueGt(dest *heapNode[T]) bool {
+	return node.compare(dest) > 0
+}
+
+func (node *heapNode[T]) isValueGte(dest *heapNode[T]) bool {
+	return node.compare(dest) >= 0
+}
+
+func (node *heapNode[T]) isValueLt(dest *heapNode[T]) bool {
+	return node.compare(dest) < 0
+}
+
+func (node *heapNode[T]) isValueLte(dest *heapNode[T]) bool {
+	return node.compare(dest) <= 0
+}
+
+func (node *heapNode[T]) toLast() *heapNode[T] {
+	if index := node.makeLastIndex(); index >= 0 {
+		return newHeapNode(node.heap, index)
+	}
+	return nil
+}
+
+func (node *heapNode[T]) toParent() *heapNode[T] {
+	if index := node.makeParentIndex(); index >= 0 {
+		return newHeapNode(node.heap, index)
+	}
+	return nil
+}
+
+func (node *heapNode[T]) toLeftChild() *heapNode[T] {
+	if index := node.makeLeftChildIndex(); index < node.heap.Size() {
+		return newHeapNode(node.heap, index)
+	}
+	return nil
+}
+
+func (node *heapNode[T]) toRightChild() *heapNode[T] {
+	if index := node.makeRightChildIndex(); index < node.heap.Size() {
+		return newHeapNode(node.heap, index)
+	}
+	return nil
+}
+
+func (node *heapNode[T]) makeLastIndex() int {
+	return node.heap.Size() - 1
+}
+
+func (node *heapNode[T]) makeParentIndex() int {
+	return (node.index+1)/2 - 1
+}
+
+func (node *heapNode[T]) makeLeftChildIndex() int {
+	return 2*node.index + 1
+}
+
+func (node *heapNode[T]) makeRightChildIndex() int {
+	return 2*node.index + 2
+}
+
+type HeapIterator[T HeapValue[T]] struct {
+	heap  *Heap[T]
+	index int
+}
+
+func (iterator *HeapIterator[T]) Next() (T, bool) {
+	heap := iterator.heap
+	if iterator.index >= heap.Size() {
+		return xbvalue.Zero[T](), false
+	}
+	value := heap.values[iterator.index]
+	iterator.index++
+	return value, true
+}
+
 const (
 	deapNodeIndexMin = 0
 	deapNodeIndexMax = 1
@@ -18,7 +207,7 @@ type Deap[T DeapValue[T]] struct {
 	values []T
 }
 
-type DeapValue[T any] xbtype.Comparable[T]
+type DeapValue[T any] HeapValue[T]
 
 func (deap *Deap[T]) Size() int {
 	return len(deap.values)
@@ -224,7 +413,7 @@ func (deap *Deap[T]) sortInMaxHeap(node, dest *deapNode[T]) {
 
 func newDeapNode[T DeapValue[T]](deap *Deap[T], index int) *deapNode[T] {
 	node := &deapNode[T]{deap: deap, index: index}
-	node.refresh()
+	node.initialize()
 	return node
 }
 
@@ -239,12 +428,7 @@ func (node *deapNode[T]) getValue() T {
 	return node.deap.values[node.index]
 }
 
-func (node *deapNode[T]) setIndex(index int) {
-	node.index = index
-	node.refresh()
-}
-
-func (node *deapNode[T]) refresh() {
+func (node *deapNode[T]) initialize() {
 	node.level = node.makeLevel()
 	node.class = node.makeClass()
 }
