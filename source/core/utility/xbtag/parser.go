@@ -15,7 +15,7 @@ const (
 	defaultStructTagSeparatorEscape = '\\'
 )
 
-func ParseStructTag(name string, input any, options *StructTagParserOptions) StructTagMap {
+func ParseStructTag(name string, input any, options *StructTagParserOptions) map[string]*StructFieldTag {
 	parser := &StructTagParser{name: name, input: input, options: options}
 	parser.initialize()
 	parser.checkName()
@@ -43,10 +43,10 @@ func ParseStructTag(name string, input any, options *StructTagParserOptions) Str
 }
 
 type StructTagParser struct {
-	tags          StructTagMap
 	name          string
 	input         any
 	options       *StructTagParserOptions
+	tags          map[string]*StructFieldTag
 	tagSeparator  *string
 	flagSeparator *string
 	infoSeparator *string
@@ -69,7 +69,7 @@ type StructTagParserOptions struct {
 type StructTagParserOperate = func()
 
 func (parser *StructTagParser) initialize() {
-	parser.tags = make(StructTagMap)
+	parser.tags = make(map[string]*StructFieldTag)
 	if parser.options == nil {
 		parser.options = &StructTagParserOptions{}
 	}
@@ -264,8 +264,6 @@ func (parser *StructTagParser) makeSplitTexts(value, separator string) []string 
 	}
 	return texts
 }
-
-type StructTagMap = map[string]*StructFieldTag
 
 type StructFieldTag struct {
 	value   string

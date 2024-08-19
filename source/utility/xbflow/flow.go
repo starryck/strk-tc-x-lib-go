@@ -22,7 +22,7 @@ type BaseFlow struct {
 	storage *sync.Map
 }
 
-type Operate func(args ...any) error
+type Operate = func(args ...any) error
 
 func (flow *BaseFlow) Initiate() {
 	flow.storage = &sync.Map{}

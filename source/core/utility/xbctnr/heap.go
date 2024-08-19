@@ -295,18 +295,6 @@ func (deap *Deap[T]) drop(node *deapNode[T]) T {
 	return value
 }
 
-func (deap *Deap[T]) swap(node *deapNode[T]) (*deapNode[T], bool) {
-	dest := node.toContrast()
-	if dest == nil {
-		return nil, false
-	}
-	if (node.isInMinHeap() && node.isValueGt(dest)) || (node.isInMaxHeap() && node.isValueLt(dest)) {
-		node.exchange(dest)
-		return dest, true
-	}
-	return nil, false
-}
-
 func (deap *Deap[T]) swim(node *deapNode[T]) {
 	if node.isInMinHeap() {
 		deap.swimInMinHeap(node)
@@ -373,19 +361,23 @@ func (deap *Deap[T]) sinkInMaxHeap(node *deapNode[T]) {
 	}
 }
 
-func (deap *Deap[T]) sort(node *deapNode[T]) {
+func (deap *Deap[T]) swap(node *deapNode[T]) (*deapNode[T], bool) {
 	dest := node.toContrast()
 	if dest == nil {
-		return
+		return nil, false
 	}
-	if dest.isInMinHeap() {
-		deap.sortInMinHeap(node, dest)
-	} else {
-		deap.sortInMaxHeap(node, dest)
+	if (node.isInMinHeap() && node.isValueGt(dest)) || (node.isInMaxHeap() && node.isValueLt(dest)) {
+		node.exchange(dest)
+		return dest, true
 	}
+	return nil, false
 }
 
-func (deap *Deap[T]) sortInMinHeap(node, dest *deapNode[T]) {
+func (deap *Deap[T]) sort(node *deapNode[T]) {
+	dest := node.toContrast()
+	if dest == nil || dest.isInMaxHeap() {
+		return
+	}
 	next := dest.toLeftChild()
 	if next == nil {
 		return
@@ -394,19 +386,6 @@ func (deap *Deap[T]) sortInMinHeap(node, dest *deapNode[T]) {
 		next = more
 	}
 	if node.isValueLt(next) {
-		node.exchange(next)
-	}
-}
-
-func (deap *Deap[T]) sortInMaxHeap(node, dest *deapNode[T]) {
-	next := dest.toLeftChild()
-	if next == nil {
-		return
-	}
-	if more := dest.toRightChild(); more != nil && more.isValueLt(next) {
-		next = more
-	}
-	if node.isValueGt(next) {
 		node.exchange(next)
 	}
 }

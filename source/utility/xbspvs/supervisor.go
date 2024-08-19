@@ -64,7 +64,7 @@ const (
 	exitCodeFailure
 )
 
-type Operate func(args ...any)
+type Operate = func(args ...any)
 
 type Supervisor struct {
 	daemons       []*Daemon
