@@ -252,6 +252,14 @@ func (flow *BaseFlow) RequireIntStringMap(key string) map[int]string {
 	return value
 }
 
+func (flow *BaseFlow) RequireIntSet(key string) map[int]struct{} {
+	value, ok := flow.Require(key).(map[int]struct{})
+	if !ok {
+		panic(fmt.Sprintf("The value of key `%s` must be of map[int]struct{} type in flow storage.", key))
+	}
+	return value
+}
+
 func (flow *BaseFlow) RequireStringMap(key string) map[string]any {
 	value, ok := flow.Require(key).(map[string]any)
 	if !ok {
@@ -280,6 +288,14 @@ func (flow *BaseFlow) RequireStringStringMap(key string) map[string]string {
 	value, ok := flow.Require(key).(map[string]string)
 	if !ok {
 		panic(fmt.Sprintf("The value of key `%s` must be of map[string]string type in flow storage.", key))
+	}
+	return value
+}
+
+func (flow *BaseFlow) RequireStringSet(key string) map[string]struct{} {
+	value, ok := flow.Require(key).(map[string]struct{})
+	if !ok {
+		panic(fmt.Sprintf("The value of key `%s` must be of map[string]struct{} type in flow storage.", key))
 	}
 	return value
 }

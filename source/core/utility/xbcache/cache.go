@@ -7,12 +7,11 @@ import (
 	"sort"
 
 	arc "github.com/hashicorp/golang-lru/arc/v2"
+
+	"github.com/starryck/x-lib-go/source/core/base/xbtype"
 )
 
-var sequenceKindSet = map[reflect.Kind]bool{
-	reflect.Array: true,
-	reflect.Slice: true,
-}
+var sequenceKindSet = xbtype.NewSet(reflect.Array, reflect.Slice)
 
 func MakeCacheKey(prefix string, keysep string, keyfrags ...any) string {
 	keyParts := &bytes.Buffer{}
@@ -45,14 +44,14 @@ func makePrefixKeyPart(prefix string, keysep string) string {
 func makeSequenceKeyPart(keyfrag any, keysep string) string {
 	sequence := reflect.ValueOf(keyfrag)
 	elements := []string{}
-	elementSet := map[string]bool{}
+	elementSet := xbtype.NewSet[string]()
 	for i := 0; i < sequence.Len(); i++ {
 		element := fmt.Sprintf("%v", sequence.Index(i))
 		if _, ok := elementSet[element]; ok {
 			continue
 		}
 		elements = append(elements, element)
-		elementSet[element] = true
+		elementSet[element] = struct{}{}
 	}
 	sort.Strings(elements)
 	return fmt.Sprintf("%s%v", keysep, elements)

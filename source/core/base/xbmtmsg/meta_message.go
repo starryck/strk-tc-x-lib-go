@@ -6,6 +6,7 @@ import (
 	"regexp"
 
 	"github.com/starryck/x-lib-go/source/core/base/xbcfg"
+	"github.com/starryck/x-lib-go/source/core/base/xbtype"
 )
 
 // Code: {Severity Code (1)}{Project Code (1)}{Service Code (1)}{Sequence Number (3)}
@@ -41,18 +42,17 @@ var (
 		"Request body must be bound correctly.")
 )
 
-var metaMessageMap = map[string]*MetaMessage{}
-
 func NewMetaMessage(httpCode int, code, outText, logText string) *MetaMessage {
-	metaMessageMap[code] = (&metaMessageBuilder{}).
+	metaMessage := (&metaMessageBuilder{}).
 		initialize().
 		setCode(code).
 		setHTTPCode(httpCode).
 		setLogText(logText).
 		setOutCode().
 		setOutText(outText).
+		updateCodeSet().
 		build()
-	return metaMessageMap[code]
+	return metaMessage
 }
 
 type MetaMessage struct {
@@ -88,7 +88,10 @@ func (metaMessage *MetaMessage) String() string {
 		metaMessage.code, metaMessage.httpCode)
 }
 
-var metaMessageCodeRegex = regexp.MustCompile(`^[A-Z]{3}[0-9]{3}$`)
+var (
+	metaMessageCodeSet   = xbtype.NewSet[string]()
+	metaMessageCodeRegex = regexp.MustCompile(`^[A-Z]{3}[0-9]{3}$`)
+)
 
 type metaMessageBuilder struct {
 	metaMessage *MetaMessage
@@ -104,7 +107,7 @@ func (builder *metaMessageBuilder) initialize() *metaMessageBuilder {
 }
 
 func (builder *metaMessageBuilder) setCode(code string) *metaMessageBuilder {
-	if _, ok := metaMessageMap[code]; ok {
+	if _, ok := metaMessageCodeSet[code]; ok {
 		panic(fmt.Sprintf("Duplicate meta message code `%s` is found.", code))
 	}
 	if ok := metaMessageCodeRegex.MatchString(code); !ok {
@@ -135,5 +138,10 @@ func (builder *metaMessageBuilder) setOutCode() *metaMessageBuilder {
 
 func (builder *metaMessageBuilder) setOutText(outText string) *metaMessageBuilder {
 	builder.metaMessage.outText = outText
+	return builder
+}
+
+func (builder *metaMessageBuilder) updateCodeSet() *metaMessageBuilder {
+	metaMessageCodeSet[builder.metaMessage.code] = struct{}{}
 	return builder
 }
