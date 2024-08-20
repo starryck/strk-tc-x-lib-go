@@ -9,5 +9,5 @@ func NewSet[T comparable](values ...T) map[T]struct{} {
 }
 
 type Comparable[T any] interface {
-	Compare(comparable T) int
+	Compare(value T) int
 }

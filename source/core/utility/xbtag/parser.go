@@ -212,7 +212,13 @@ func (parser *StructTagParser) updateInfoValue() {
 }
 
 func (parser *StructTagParser) updateFlagValue() {
-	parser.flag.value = parser.flag.name + *parser.flagSeparator + parser.flag.info.value
+	var value string
+	if parser.flag.info.value == "" {
+		value = parser.flag.name
+	} else {
+		value = parser.flag.name + *parser.flagSeparator + parser.flag.info.value
+	}
+	parser.flag.value = value
 }
 
 func (parser *StructTagParser) updateTagFlags() {
