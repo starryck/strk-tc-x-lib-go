@@ -5,7 +5,7 @@ import (
 	"path"
 	"runtime"
 
-	"github.com/caarlos0/env/v10"
+	"github.com/caarlos0/env/v11"
 
 	"github.com/starryck/x-lib-go/source/core/base/xbcfg"
 	"github.com/starryck/x-lib-go/source/core/base/xbconst"
@@ -58,11 +58,11 @@ func MakeServiceDeveloping(srvEnv string) bool {
 }
 
 type Config struct {
-	BasePath  string `json:"basePath"`
+	BasePath  string `json:"basePath" env:"-"`
 	GitTag    string `json:"gitTag" env:"GIT_TAG,notEmpty"`
 	GitCommit string `json:"gitCommit" env:"GIT_COMMIT,notEmpty"`
 
-	ServiceID          string `json:"serviceID"`
+	ServiceID          string `json:"serviceID" env:"-"`
 	ServiceCode        string `json:"serviceCode" env:"SRV_CODE" envDefault:"S001"`
 	ServiceName        string `json:"serviceName" env:"SRV_NAME" envDefault:"lib-go"`
 	ServicePort        int    `json:"servicePort" env:"SRV_PORT" envDefault:"80"`
@@ -72,7 +72,7 @@ type Config struct {
 	ServiceLogLevel    string `json:"serviceLogLevel" env:"SRV_LOG_LEVEL" envDefault:"INFO"`
 	ServiceTesting     bool   `json:"serviceTesting" env:"SRV_TESTING" envDefault:"false"`
 	ServiceDebugging   bool   `json:"serviceDebugging" env:"SRV_DEBUGGING" envDefault:"false"`
-	ServiceDeveloping  bool   `json:"serviceDeveloping"`
+	ServiceDeveloping  bool   `json:"serviceDeveloping" env:"-"`
 
 	PostgresHost     string `json:"postgresHost" env:"POSTGRES_HOST"`
 	PostgresPort     string `json:"postgresPort" env:"POSTGRES_PORT" envDefault:"5432"`
