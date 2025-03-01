@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
-	"sort"
+	"slices"
 
 	arc "github.com/hashicorp/golang-lru/arc/v2"
 
@@ -53,7 +53,7 @@ func makeSequenceKeyPart(keyfrag any, keysep string) string {
 		elements = append(elements, element)
 		elementSet[element] = struct{}{}
 	}
-	sort.Strings(elements)
+	slices.Sort(elements)
 	return fmt.Sprintf("%s%v", keysep, elements)
 }
 

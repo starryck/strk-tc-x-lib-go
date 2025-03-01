@@ -2,6 +2,7 @@ package xblogger
 
 import (
 	"fmt"
+	"maps"
 	"reflect"
 	"runtime"
 	"strings"
@@ -262,9 +263,7 @@ func (builder *jsonBuilder) setErrorFields(fields Fields, err error) {
 		}
 	}
 	if cerr, ok := xberror.AsCustomError(err); ok {
-		for key, value := range cerr.LogFields() {
-			fields[key] = value
-		}
+		maps.Copy(fields, cerr.LogFields())
 	}
 }
 
