@@ -125,7 +125,7 @@ func (parser *StructTagParser) setupInfoSeparator() {
 
 func (parser *StructTagParser) iterateFields(operate StructTagParserOperate) {
 	inputType := reflect.TypeOf(parser.input)
-	for i := 0; i < inputType.NumField(); i++ {
+	for i := range inputType.NumField() {
 		field := inputType.Field(i)
 		if !field.IsExported() {
 			continue
@@ -253,7 +253,7 @@ func (parser *StructTagParser) makeSplitTexts(value, separator string) []string 
 	texts := []string{}
 	parts := strings.Split(value, separator)
 	partsSize := len(parts)
-	for i := 0; i < partsSize; i++ {
+	for i := range partsSize {
 		text := parts[i]
 		textSize := len(text)
 		if textSize > 0 {

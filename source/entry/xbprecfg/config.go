@@ -39,7 +39,7 @@ func ParseEnv(config xbcfg.Config) {
 
 func MakeBasePath(back int) string {
 	_, dir, _, _ := runtime.Caller(1)
-	for i := 0; i < back; i++ {
+	for range back {
 		dir = path.Dir(dir)
 	}
 	return dir

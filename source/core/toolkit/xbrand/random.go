@@ -38,7 +38,7 @@ func MakeBaseNBytes(length int, radixes []byte) []byte {
 	src := MakeBytes(length)
 	dst := make([]byte, length)
 	base := byte(len(radixes))
-	for i := 0; i < length; i++ {
+	for i := range length {
 		dst[i] = radixes[src[i]%base]
 	}
 	return dst

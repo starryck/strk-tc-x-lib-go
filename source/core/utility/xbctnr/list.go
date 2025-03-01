@@ -73,7 +73,7 @@ func (queue *Queue[T]) Slice() []T {
 		return nil
 	}
 	slice := make([]T, queue.size)
-	for i := 0; i < queue.size; i++ {
+	for i := range queue.size {
 		slice[i] = next.value
 		next = next.next
 	}
@@ -182,7 +182,7 @@ func (deque *Deque[T]) Slice() []T {
 		return nil
 	}
 	slice := make([]T, deque.size)
-	for i := 0; i < deque.size; i++ {
+	for i := range deque.size {
 		slice[i] = next.value
 		next = next.next
 	}
@@ -256,7 +256,7 @@ func (deque *Deque[T]) RSlice() []T {
 		return nil
 	}
 	slice := make([]T, deque.size)
-	for i := 0; i < deque.size; i++ {
+	for i := range deque.size {
 		slice[i] = next.value
 		next = next.prev
 	}

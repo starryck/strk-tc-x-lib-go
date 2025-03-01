@@ -78,7 +78,7 @@ func isAnyMemberNil(value Value) bool {
 		if length == 0 {
 			return false
 		}
-		for i := 0; i < length; i++ {
+		for i := range length {
 			if isNil(value.Index(i)) {
 				return true
 			}
@@ -89,7 +89,7 @@ func isAnyMemberNil(value Value) bool {
 		if length == 0 {
 			return false
 		}
-		for i := 0; i < length; i++ {
+		for i := range length {
 			elem := value.Field(i)
 			if elem.CanInterface() && isNil(elem) {
 				return true
@@ -137,7 +137,7 @@ func areAllMembersNil(value Value) bool {
 		if length == 0 {
 			return false
 		}
-		for i := 0; i < length; i++ {
+		for i := range length {
 			if !isNil(value.Index(i)) {
 				return false
 			}
@@ -149,7 +149,7 @@ func areAllMembersNil(value Value) bool {
 			return false
 		}
 		lengthOfUnexportedFields := 0
-		for i := 0; i < length; i++ {
+		for i := range length {
 			elem := value.Field(i)
 			if !elem.CanInterface() {
 				lengthOfUnexportedFields++

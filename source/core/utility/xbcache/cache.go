@@ -45,7 +45,7 @@ func makeSequenceKeyPart(keyfrag any, keysep string) string {
 	sequence := reflect.ValueOf(keyfrag)
 	elements := []string{}
 	elementSet := xbtype.NewSet[string]()
-	for i := 0; i < sequence.Len(); i++ {
+	for i := range sequence.Len() {
 		element := fmt.Sprintf("%v", sequence.Index(i))
 		if _, ok := elementSet[element]; ok {
 			continue
