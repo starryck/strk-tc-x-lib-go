@@ -101,8 +101,8 @@ func (supervisor *Supervisor) setupDaemons() {
 
 func (supervisor *Supervisor) startDaemons() {
 	for _, daemon := range supervisor.daemons {
+		supervisor.waitGroup.Add(1)
 		go func(daemon *Daemon) {
-			supervisor.waitGroup.Add(1)
 			defer supervisor.waitGroup.Done()
 			defer supervisor.rootCanceller()
 			daemon.start(supervisor.rootContext)
