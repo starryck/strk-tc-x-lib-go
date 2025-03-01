@@ -112,11 +112,10 @@ func (supervisor *Supervisor) startDaemons() {
 }
 
 func (supervisor *Supervisor) serveDaemons() {
-	ticker := time.NewTicker(supervisor.heartbeatInterval)
-	defer ticker.Stop()
+	tick := time.Tick(supervisor.heartbeatInterval)
 	for {
 		select {
-		case <-ticker.C:
+		case <-tick:
 			supervisor.emitBeatInfo()
 		case <-supervisor.signalChannel:
 			supervisor.rootCanceller()
@@ -140,14 +139,14 @@ func (supervisor *Supervisor) emitShutInfo() {
 }
 
 func (supervisor *Supervisor) waitDaemons() {
-	ticker, timer := time.NewTicker(1*time.Second), time.After(supervisor.gracefulTimeout)
+	tick, timer := time.Tick(1*time.Second), time.After(supervisor.gracefulTimeout)
 	go func() {
 		supervisor.waitGroup.Wait()
 		supervisor.waitChannel <- struct{}{}
 	}()
 	for {
 		select {
-		case <-ticker.C:
+		case <-tick:
 			supervisor.emitBeatInfo()
 		case <-timer:
 			supervisor.exitCode = exitCodeFailure
