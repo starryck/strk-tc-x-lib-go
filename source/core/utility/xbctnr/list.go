@@ -1,6 +1,11 @@
 package xbctnr
 
-import "github.com/starryck/x-lib-go/source/core/toolkit/xbvalue"
+import (
+	"iter"
+	"slices"
+
+	"github.com/starryck/x-lib-go/source/core/toolkit/xbvalue"
+)
 
 type Queue[T any] struct {
 	size int
@@ -68,16 +73,23 @@ func (queue *Queue[T]) Peek() (T, bool) {
 }
 
 func (queue *Queue[T]) Slice() []T {
-	next := queue.head
-	if next == nil {
-		return nil
+	return slices.Collect(queue.Sequence())
+}
+
+func (queue *Queue[T]) Sequence() iter.Seq[T] {
+	return func(yield func(T) bool) {
+		next := queue.head
+		if next == nil {
+			return
+		}
+		for range queue.size {
+			if !yield(next.value) {
+				return
+			}
+			next = next.next
+		}
+		return
 	}
-	slice := make([]T, queue.size)
-	for i := range queue.size {
-		slice[i] = next.value
-		next = next.next
-	}
-	return slice
 }
 
 func (queue *Queue[T]) Iterator() *QueueIterator[T] {
@@ -177,16 +189,23 @@ func (deque *Deque[T]) Peek() (T, bool) {
 }
 
 func (deque *Deque[T]) Slice() []T {
-	next := deque.head
-	if next == nil {
-		return nil
+	return slices.Collect(deque.Sequence())
+}
+
+func (deque *Deque[T]) Sequence() iter.Seq[T] {
+	return func(yield func(T) bool) {
+		next := deque.head
+		if next == nil {
+			return
+		}
+		for range deque.size {
+			if !yield(next.value) {
+				return
+			}
+			next = next.next
+		}
+		return
 	}
-	slice := make([]T, deque.size)
-	for i := range deque.size {
-		slice[i] = next.value
-		next = next.next
-	}
-	return slice
 }
 
 func (deque *Deque[T]) Iterator() *DequeIterator[T] {
@@ -251,16 +270,23 @@ func (deque *Deque[T]) RPeek() (T, bool) {
 }
 
 func (deque *Deque[T]) RSlice() []T {
-	next := deque.tail
-	if next == nil {
-		return nil
+	return slices.Collect(deque.RSequence())
+}
+
+func (deque *Deque[T]) RSequence() iter.Seq[T] {
+	return func(yield func(T) bool) {
+		next := deque.tail
+		if next == nil {
+			return
+		}
+		for range deque.size {
+			if !yield(next.value) {
+				return
+			}
+			next = next.prev
+		}
+		return
 	}
-	slice := make([]T, deque.size)
-	for i := range deque.size {
-		slice[i] = next.value
-		next = next.prev
-	}
-	return slice
 }
 
 func (deque *Deque[T]) RIterator() *DequeReverseIterator[T] {
@@ -294,14 +320,6 @@ type DequeIterator[T any] struct {
 	next  *DequeNode[T]
 }
 
-func (iterator *DequeIterator[T]) Drop() (T, bool) {
-	prev := iterator.prev
-	if prev == nil {
-		return xbvalue.Zero[T](), false
-	}
-	return iterator.deque.Drop(prev)
-}
-
 func (iterator *DequeIterator[T]) Next() (T, bool) {
 	next := iterator.next
 	if next == nil {
@@ -312,18 +330,18 @@ func (iterator *DequeIterator[T]) Next() (T, bool) {
 	return next.value, true
 }
 
-type DequeReverseIterator[T any] struct {
-	deque *Deque[T]
-	prev  *DequeNode[T]
-	next  *DequeNode[T]
-}
-
-func (iterator *DequeReverseIterator[T]) Drop() (T, bool) {
+func (iterator *DequeIterator[T]) Drop() (T, bool) {
 	prev := iterator.prev
 	if prev == nil {
 		return xbvalue.Zero[T](), false
 	}
 	return iterator.deque.Drop(prev)
+}
+
+type DequeReverseIterator[T any] struct {
+	deque *Deque[T]
+	prev  *DequeNode[T]
+	next  *DequeNode[T]
 }
 
 func (iterator *DequeReverseIterator[T]) Next() (T, bool) {
@@ -334,4 +352,12 @@ func (iterator *DequeReverseIterator[T]) Next() (T, bool) {
 	iterator.prev = next
 	iterator.next = next.prev
 	return next.value, true
+}
+
+func (iterator *DequeReverseIterator[T]) Drop() (T, bool) {
+	prev := iterator.prev
+	if prev == nil {
+		return xbvalue.Zero[T](), false
+	}
+	return iterator.deque.Drop(prev)
 }

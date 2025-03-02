@@ -1,5 +1,11 @@
 package xbctnr
 
+import (
+	"iter"
+	"maps"
+	"slices"
+)
+
 func NewSet[T comparable](values ...T) Set[T] {
 	set := make(Set[T], len(values))
 	for _, value := range values {
@@ -21,6 +27,14 @@ func (set Set[T]) Add(value T) {
 
 func (set Set[T]) Remove(value T) {
 	delete(set, value)
+}
+
+func (set Set[T]) Slice() []T {
+	return slices.Collect(set.Sequence())
+}
+
+func (set Set[T]) Sequence() iter.Seq[T] {
+	return maps.Keys(set)
 }
 
 func (set Set[T]) Clear() {

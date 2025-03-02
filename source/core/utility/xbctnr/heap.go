@@ -1,7 +1,9 @@
 package xbctnr
 
 import (
+	"iter"
 	"math"
+	"slices"
 
 	"github.com/starryck/x-lib-go/source/core/base/xbtype"
 	"github.com/starryck/x-lib-go/source/core/toolkit/xbvalue"
@@ -44,7 +46,11 @@ func (heap *Heap[T]) Peek() (T, bool) {
 }
 
 func (heap *Heap[T]) Slice() []T {
-	return heap.values
+	return slices.Clone(heap.values)
+}
+
+func (heap *Heap[T]) Sequence() iter.Seq2[int, T] {
+	return slices.All(heap.values)
 }
 
 func (heap *Heap[T]) Iterator() *HeapIterator[T] {
@@ -260,7 +266,11 @@ func (deap *Deap[T]) PeekMax() (T, bool) {
 }
 
 func (deap *Deap[T]) Slice() []T {
-	return deap.values
+	return slices.Clone(deap.values)
+}
+
+func (deap *Deap[T]) Sequence() iter.Seq2[int, T] {
+	return slices.All(deap.values)
 }
 
 func (deap *Deap[T]) Iterator() *DeapIterator[T] {
