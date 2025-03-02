@@ -7,7 +7,7 @@ import (
 	"github.com/rs/xid"
 	"github.com/segmentio/ksuid"
 
-	"github.com/starryck/x-lib-go/source/core/toolkit/xbradix"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/toolkit/xbradix"
 )
 
 func MakeXID() string {

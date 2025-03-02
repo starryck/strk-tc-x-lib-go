@@ -10,11 +10,11 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/starryck/x-lib-go/source/core/base/xbcfg"
-	"github.com/starryck/x-lib-go/source/core/toolkit/xbslice"
-	"github.com/starryck/x-lib-go/source/core/utility/xbctnr"
-	"github.com/starryck/x-lib-go/source/core/utility/xberror"
-	"github.com/starryck/x-lib-go/source/core/utility/xbjson"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/base/xbcfg"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/toolkit/xbslice"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xbctnr"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xberror"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xbjson"
 )
 
 var mLogger *Logger

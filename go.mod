@@ -1,4 +1,4 @@
-module github.com/starryck/x-lib-go
+module github.com/starryck/strk-tc-x-lib-go
 
 go 1.24.0
 

@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/starryck/x-lib-go/source/core/base/xbcfg"
-	"github.com/starryck/x-lib-go/source/core/utility/xbctnr"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/base/xbcfg"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xbctnr"
 )
 
 // Code: {Severity Code (1)}{Project Code (1)}{Service Code (1)}{Sequence Number (3)}

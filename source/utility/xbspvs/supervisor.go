@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/starryck/x-lib-go/source/core/utility/xblogger"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xblogger"
 )
 
 var mSupervisor *Supervisor

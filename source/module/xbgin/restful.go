@@ -8,10 +8,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/starryck/x-lib-go/source/core/base/xbconst"
-	"github.com/starryck/x-lib-go/source/core/base/xbmtmsg"
-	"github.com/starryck/x-lib-go/source/core/utility/xberror"
-	"github.com/starryck/x-lib-go/source/core/utility/xblogger"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/base/xbconst"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/base/xbmtmsg"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xberror"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xblogger"
 )
 
 type RESTFlow struct {

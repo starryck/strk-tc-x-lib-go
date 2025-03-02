@@ -7,9 +7,9 @@ import (
 
 	"github.com/caarlos0/env/v11"
 
-	"github.com/starryck/x-lib-go/source/core/base/xbcfg"
-	"github.com/starryck/x-lib-go/source/core/base/xbconst"
-	"github.com/starryck/x-lib-go/source/core/toolkit/xbrand"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/base/xbcfg"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/base/xbconst"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/toolkit/xbrand"
 )
 
 func NewConfig() *Config {

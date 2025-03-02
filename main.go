@@ -5,9 +5,9 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/starryck/x-lib-go/source/entry/xbinfo"
-	_ "github.com/starryck/x-lib-go/source/entry/xbpreset"
-	"github.com/starryck/x-lib-go/source/entry/xbscript"
+	"github.com/starryck/strk-tc-x-lib-go/source/entry/xbinfo"
+	_ "github.com/starryck/strk-tc-x-lib-go/source/entry/xbpreset"
+	"github.com/starryck/strk-tc-x-lib-go/source/entry/xbscript"
 )
 
 var (
@@ -16,13 +16,16 @@ var (
 
 func init() {
 	app = &cli.App{
-		Name:      "lib-go",
-		Usage:     "Go library",
+		Name:      "x-lib-go",
+		Usage:     "X Go library",
 		Version:   "v1",
 		HelpName:  "./main.exe",
 		ArgsUsage: "[arguments...]",
 		Authors: []*cli.Author{
-			&cli.Author{Name: "gordon.lai@starryck.com"},
+			&cli.Author{
+				Name:  "Gordon Lai",
+				Email: "gordon.lai@starryck.com",
+			},
 		},
 		Action: func(ctx *cli.Context) error {
 			cli.ShowAppHelp(ctx)

@@ -4,7 +4,7 @@ import (
 	"iter"
 	"slices"
 
-	"github.com/starryck/x-lib-go/source/core/toolkit/xbvalue"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/toolkit/xbvalue"
 )
 
 type Queue[T any] struct {

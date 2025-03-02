@@ -5,8 +5,8 @@ import (
 	"math"
 	"slices"
 
-	"github.com/starryck/x-lib-go/source/core/base/xbtype"
-	"github.com/starryck/x-lib-go/source/core/toolkit/xbvalue"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/base/xbtype"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/toolkit/xbvalue"
 )
 
 const heapNodeIndexFirst = 0

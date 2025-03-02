@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/starryck/x-lib-go/source/core/toolkit/xbreflect"
-	"github.com/starryck/x-lib-go/source/core/toolkit/xbvalue"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/toolkit/xbreflect"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/toolkit/xbvalue"
 )
 
 const (

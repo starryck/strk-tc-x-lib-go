@@ -5,8 +5,8 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/starryck/x-lib-go/source/core/base/xbcfg"
-	"github.com/starryck/x-lib-go/source/entry/xbprecfg"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/base/xbcfg"
+	"github.com/starryck/strk-tc-x-lib-go/source/entry/xbprecfg"
 )
 
 func init() {

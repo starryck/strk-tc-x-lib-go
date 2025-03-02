@@ -3,7 +3,7 @@ package xbslice
 import (
 	"math"
 
-	"github.com/starryck/x-lib-go/source/core/toolkit/xbvalue"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/toolkit/xbvalue"
 )
 
 func First[T any](elems []T) T {

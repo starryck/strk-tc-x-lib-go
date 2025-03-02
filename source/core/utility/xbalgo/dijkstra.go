@@ -7,8 +7,8 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/starryck/x-lib-go/source/core/toolkit/xbvalue"
-	"github.com/starryck/x-lib-go/source/core/utility/xbctnr"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/toolkit/xbvalue"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xbctnr"
 )
 
 func NewDijkstra[T DijkstraVectex]() Dijkstra[T] {

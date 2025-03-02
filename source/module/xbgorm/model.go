@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/starryck/x-lib-go/source/core/utility/xbctnr"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xbctnr"
 )
 
 type ModelDAO[T any] struct {

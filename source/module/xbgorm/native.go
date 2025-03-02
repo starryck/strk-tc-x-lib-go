@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
-	"github.com/starryck/x-lib-go/source/core/utility/xberror"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xberror"
 )
 
 type (

@@ -8,7 +8,7 @@ import (
 
 	arc "github.com/hashicorp/golang-lru/arc/v2"
 
-	"github.com/starryck/x-lib-go/source/core/utility/xbctnr"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xbctnr"
 )
 
 var sequenceKindSet = xbctnr.NewSet(reflect.Array, reflect.Slice)

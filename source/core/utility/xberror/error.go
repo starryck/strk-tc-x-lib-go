@@ -6,7 +6,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/starryck/x-lib-go/source/core/base/xbmtmsg"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/base/xbmtmsg"
 )
 
 func Is(err, target error) bool {

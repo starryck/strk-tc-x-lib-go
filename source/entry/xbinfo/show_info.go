@@ -1,8 +1,8 @@
 package xbinfo
 
 import (
-	"github.com/starryck/x-lib-go/source/core/base/xbcfg"
-	"github.com/starryck/x-lib-go/source/core/utility/xblogger"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/base/xbcfg"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xblogger"
 )
 
 func Execute() error {

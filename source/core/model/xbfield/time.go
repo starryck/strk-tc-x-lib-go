@@ -4,9 +4,9 @@ import (
 	"database/sql/driver"
 	"time"
 
-	"github.com/starryck/x-lib-go/source/core/toolkit/xbvalue"
-	"github.com/starryck/x-lib-go/source/core/utility/xberror"
-	"github.com/starryck/x-lib-go/source/core/utility/xbjson"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/toolkit/xbvalue"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xberror"
+	"github.com/starryck/strk-tc-x-lib-go/source/core/utility/xbjson"
 )
 
 type UnixTime time.Time
