@@ -13,14 +13,14 @@ import (
 
 func NewDijkstra[T DijkstraVectex]() Dijkstra[T] {
 	dijkstra := &Dijkstra[T]{
-		vertexSet:    make(map[T]struct{}),
+		vertexSet:    xbctnr.NewSet[T](),
 		neighborsMap: make(map[T][]*DijkstraAdjacency[T]),
 	}
 	return *dijkstra
 }
 
 type Dijkstra[T DijkstraVectex] struct {
-	vertexSet    map[T]struct{}
+	vertexSet    xbctnr.Set[T]
 	neighborsMap map[T][]*DijkstraAdjacency[T]
 }
 
@@ -79,8 +79,8 @@ func (grapher *DijkstraGrapher[T]) checkDistance() {
 func (grapher *DijkstraGrapher[T]) storeVerticies() {
 	edge := grapher.edge
 	vertexSet := grapher.dijkstra.vertexSet
-	vertexSet[edge.Source] = struct{}{}
-	vertexSet[edge.Target] = struct{}{}
+	vertexSet.Add(edge.Source)
+	vertexSet.Add(edge.Target)
 }
 
 func (grapher *DijkstraGrapher[T]) storeNeighbors() {

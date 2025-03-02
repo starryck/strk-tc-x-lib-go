@@ -11,8 +11,8 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/starryck/x-lib-go/source/core/base/xbcfg"
-	"github.com/starryck/x-lib-go/source/core/base/xbtype"
 	"github.com/starryck/x-lib-go/source/core/toolkit/xbslice"
+	"github.com/starryck/x-lib-go/source/core/utility/xbctnr"
 	"github.com/starryck/x-lib-go/source/core/utility/xberror"
 	"github.com/starryck/x-lib-go/source/core/utility/xbjson"
 )
@@ -283,7 +283,7 @@ var mCallerTracer *callerTracer
 type callerTracer struct {
 	loggerFile  string
 	logrusPath  string
-	skipFileSet map[string]struct{}
+	skipFileSet xbctnr.Set[string]
 }
 
 func getCallerTracer() *callerTracer {
@@ -315,11 +315,11 @@ func (tracer *callerTracer) source(skip int) *runtime.Frame {
 			return nil
 		}
 		file := frame.File
-		if _, ok := tracer.skipFileSet[file]; ok {
+		if ok := tracer.skipFileSet.Has(file); ok {
 			continue
 		}
 		if strings.Contains(file, tracer.logrusPath) {
-			tracer.skipFileSet[file] = struct{}{}
+			tracer.skipFileSet.Add(file)
 			continue
 		}
 		return &frame
@@ -351,8 +351,8 @@ func (builder *callerTracerBuilder) setLogrusPath() *callerTracerBuilder {
 }
 
 func (builder *callerTracerBuilder) setSkipFileSet() *callerTracerBuilder {
-	fileSet := xbtype.NewSet[string]()
-	fileSet[builder.callerTracer.loggerFile] = struct{}{}
-	builder.callerTracer.skipFileSet = fileSet
+	set := xbctnr.NewSet[string]()
+	set.Add(builder.callerTracer.loggerFile)
+	builder.callerTracer.skipFileSet = set
 	return builder
 }

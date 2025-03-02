@@ -8,10 +8,10 @@ import (
 
 	arc "github.com/hashicorp/golang-lru/arc/v2"
 
-	"github.com/starryck/x-lib-go/source/core/base/xbtype"
+	"github.com/starryck/x-lib-go/source/core/utility/xbctnr"
 )
 
-var sequenceKindSet = xbtype.NewSet(reflect.Array, reflect.Slice)
+var sequenceKindSet = xbctnr.NewSet(reflect.Array, reflect.Slice)
 
 func MakeCacheKey(prefix string, keysep string, keyfrags ...any) string {
 	keyParts := &bytes.Buffer{}
@@ -27,11 +27,10 @@ func MakeCacheKey(prefix string, keysep string, keyfrags ...any) string {
 }
 
 func isSequenceKind(value any) bool {
-	var ok bool
 	if valueType := reflect.TypeOf(value); valueType != nil {
-		_, ok = sequenceKindSet[valueType.Kind()]
+		return sequenceKindSet.Has(valueType.Kind())
 	}
-	return ok
+	return false
 }
 
 func makePrefixKeyPart(prefix string, keysep string) string {
@@ -44,14 +43,14 @@ func makePrefixKeyPart(prefix string, keysep string) string {
 func makeSequenceKeyPart(keyfrag any, keysep string) string {
 	sequence := reflect.ValueOf(keyfrag)
 	elements := []string{}
-	elementSet := xbtype.NewSet[string]()
+	elementSet := xbctnr.NewSet[string]()
 	for i := range sequence.Len() {
 		element := fmt.Sprintf("%v", sequence.Index(i))
-		if _, ok := elementSet[element]; ok {
+		if ok := elementSet.Has(element); ok {
 			continue
 		}
 		elements = append(elements, element)
-		elementSet[element] = struct{}{}
+		elementSet.Add(element)
 	}
 	slices.Sort(elements)
 	return fmt.Sprintf("%s%v", keysep, elements)

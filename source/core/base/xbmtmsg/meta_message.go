@@ -6,7 +6,7 @@ import (
 	"regexp"
 
 	"github.com/starryck/x-lib-go/source/core/base/xbcfg"
-	"github.com/starryck/x-lib-go/source/core/base/xbtype"
+	"github.com/starryck/x-lib-go/source/core/utility/xbctnr"
 )
 
 // Code: {Severity Code (1)}{Project Code (1)}{Service Code (1)}{Sequence Number (3)}
@@ -89,7 +89,7 @@ func (metaMessage *MetaMessage) String() string {
 }
 
 var (
-	metaMessageCodeSet   = xbtype.NewSet[string]()
+	metaMessageCodeSet   = xbctnr.NewSet[string]()
 	metaMessageCodeRegex = regexp.MustCompile(`^[A-Z]{3}[0-9]{3}$`)
 )
 
@@ -107,7 +107,7 @@ func (builder *metaMessageBuilder) initialize() *metaMessageBuilder {
 }
 
 func (builder *metaMessageBuilder) setCode(code string) *metaMessageBuilder {
-	if _, ok := metaMessageCodeSet[code]; ok {
+	if ok := metaMessageCodeSet.Has(code); ok {
 		panic(fmt.Sprintf("Duplicate meta message code `%s` is found.", code))
 	}
 	if ok := metaMessageCodeRegex.MatchString(code); !ok {
@@ -142,6 +142,6 @@ func (builder *metaMessageBuilder) setOutText(outText string) *metaMessageBuilde
 }
 
 func (builder *metaMessageBuilder) updateCodeSet() *metaMessageBuilder {
-	metaMessageCodeSet[builder.metaMessage.code] = struct{}{}
+	metaMessageCodeSet.Add(builder.metaMessage.code)
 	return builder
 }

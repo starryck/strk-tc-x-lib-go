@@ -9,6 +9,7 @@ import (
 
 	"github.com/starryck/x-lib-go/source/core/base/xbconst"
 	"github.com/starryck/x-lib-go/source/core/toolkit/xbrand"
+	"github.com/starryck/x-lib-go/source/core/utility/xbctnr"
 	"github.com/starryck/x-lib-go/source/core/utility/xbjson"
 	"github.com/starryck/x-lib-go/source/core/utility/xblogger"
 )
@@ -252,10 +253,10 @@ func (flow *BaseFlow) RequireIntStringMap(key string) map[int]string {
 	return value
 }
 
-func (flow *BaseFlow) RequireIntSet(key string) map[int]struct{} {
-	value, ok := flow.Require(key).(map[int]struct{})
+func (flow *BaseFlow) RequireIntSet(key string) xbctnr.Set[int] {
+	value, ok := flow.Require(key).(xbctnr.Set[int])
 	if !ok {
-		panic(fmt.Sprintf("The value of key `%s` must be of map[int]struct{} type in flow storage.", key))
+		panic(fmt.Sprintf("The value of key `%s` must be of xbctnr.Set[int] type in flow storage.", key))
 	}
 	return value
 }
@@ -292,10 +293,10 @@ func (flow *BaseFlow) RequireStringStringMap(key string) map[string]string {
 	return value
 }
 
-func (flow *BaseFlow) RequireStringSet(key string) map[string]struct{} {
-	value, ok := flow.Require(key).(map[string]struct{})
+func (flow *BaseFlow) RequireStringSet(key string) xbctnr.Set[string] {
+	value, ok := flow.Require(key).(xbctnr.Set[string])
 	if !ok {
-		panic(fmt.Sprintf("The value of key `%s` must be of map[string]struct{} type in flow storage.", key))
+		panic(fmt.Sprintf("The value of key `%s` must be of xbctnr.Set[string] type in flow storage.", key))
 	}
 	return value
 }
