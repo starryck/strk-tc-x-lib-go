@@ -59,8 +59,8 @@ func MakeServiceDeveloping(srvEnv string) bool {
 
 type Config struct {
 	BasePath  string `json:"basePath" env:"-"`
-	GitTag    string `json:"gitTag" env:"GIT_TAG,notEmpty"`
-	GitCommit string `json:"gitCommit" env:"GIT_COMMIT,notEmpty"`
+	GitTag    string `json:"gitTag" env:"GIT_TAG"`
+	GitCommit string `json:"gitCommit" env:"GIT_COMMIT"`
 
 	ServiceID          string `json:"serviceID" env:"-"`
 	ServiceCode        string `json:"serviceCode" env:"SRV_CODE" envDefault:"S001"`
@@ -68,8 +68,8 @@ type Config struct {
 	ServicePort        int    `json:"servicePort" env:"SRV_PORT" envDefault:"80"`
 	ServiceProject     string `json:"serviceProject" env:"SRV_PROJECT" envDefault:"x"`
 	ServiceVersion     string `json:"serviceVersion" env:"SRV_VERSION" envDefault:"v1"`
-	ServiceEnvironment string `json:"serviceEnvironment" env:"SRV_ENVIRONMENT,notEmpty"`
-	ServiceLogLevel    string `json:"serviceLogLevel" env:"SRV_LOG_LEVEL" envDefault:"INFO"`
+	ServiceEnvironment string `json:"serviceEnvironment" env:"SRV_ENVIRONMENT" envDefault:"prod"`
+	ServiceLogLevel    string `json:"serviceLogLevel" env:"SRV_LOG_LEVEL" envDefault:"info"`
 	ServiceTesting     bool   `json:"serviceTesting" env:"SRV_TESTING" envDefault:"false"`
 	ServiceDebugging   bool   `json:"serviceDebugging" env:"SRV_DEBUGGING" envDefault:"false"`
 	ServiceDeveloping  bool   `json:"serviceDeveloping" env:"-"`
