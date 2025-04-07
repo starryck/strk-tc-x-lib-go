@@ -13,8 +13,9 @@ const (
 	FlowKeyRequestData    = "#request_data"
 	FlowKeyRecordFields   = "#record_fields"
 
-	HeaderRealIP       = "X-Real-Ip"
-	HeaderForwardedFor = "X-Forwarded-For"
+	HeaderAuthorization = "Authorization"
+	HeaderRealIP        = "X-Real-Ip"
+	HeaderForwardedFor  = "X-Forwarded-For"
 
 	HeaderKongRequestID        = "Kong-Request-Id"
 	HeaderKongConsumerCustomID = "X-Consumer-Custom-Id"
